@@ -20,7 +20,7 @@ app.use(express.static("public"));
 
 
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: "Secret",
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -32,7 +32,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-const db = new pg.Client({
+/*const db = new pg.Client({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_DATABASE,
@@ -40,9 +40,9 @@ const db = new pg.Client({
     port: process.env.DB_PORT,
   });
 
-db.connect();
+db.connect();*/
 
-app.get("/", (req, res) => {
+app.get("/home-page", (req, res) => {
     res.render("shopIndex.ejs", {year: year});
 });
 

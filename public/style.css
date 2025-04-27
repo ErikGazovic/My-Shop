@@ -1,0 +1,135 @@
+:root {
+    --main-font: "Cal Sans", sans-serif;
+
+    --main-color: indigo;
+    --second-main-color: #EEFF00; 
+
+    --fw-600: 600;
+    --fw-800: 800;
+}
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+figure,
+blockquote,
+dl,
+dd,
+a,
+ul,
+li {
+  margin: 0;
+}
+
+
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+
+/* Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+html {
+  min-height: 100%;
+  position: relative;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+
+a {
+    text-decoration: none;
+}
+
+body {
+    background-color: snow;
+}
+
+.main-header {
+    min-height: 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--main-color);
+    box-shadow: 0px 0px 15px 2px rgba(0, 0, 0);
+    padding: 0 6vw;
+}
+
+.home-logo a {
+    color: var(--second-main-color);
+    letter-spacing: 2px;
+    font-size: 2rem;
+    font-weight: var(--fw-800);
+    text-shadow: -5px 4px 1px black;
+    transition-duration: 0.1s;
+}
+
+.home-logo a:hover {
+    text-shadow: -7px 6px 1px black;
+}
+
+.header-list {
+    display: flex;
+    min-height: 5rem;
+    align-items: center;
+    gap: 10px;
+    font-weight: var(--fw-600);
+}
+
+.header-list li {
+    width: 90px;
+    text-align: center;
+}
+
+.header-list a {
+    color: var(--second-main-color);
+}
+
+.main-font {
+    font-family: var(--main-font);
+}
+
