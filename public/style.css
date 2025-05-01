@@ -5,7 +5,7 @@
     --second-main-color: #EEFF00; 
 
     --fw-600: 600;
-    --fw-800: 800;
+    --fw-900: 900;
 }
 
 /* Box sizing rules */
@@ -95,7 +95,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: var(--main-color);
-    box-shadow: 0px 0px 15px 2px rgba(0, 0, 0);
+    
     padding: 0 6vw;
 }
 
@@ -103,7 +103,7 @@ body {
     color: var(--second-main-color);
     letter-spacing: 2px;
     font-size: 2rem;
-    font-weight: var(--fw-800);
+    font-weight: var(--fw-900);
     text-shadow: -5px 4px 1px black;
     transition-duration: 0.1s;
 }
@@ -116,20 +116,222 @@ body {
     display: flex;
     min-height: 5rem;
     align-items: center;
-    gap: 10px;
     font-weight: var(--fw-600);
 }
 
-.header-list li {
-    width: 90px;
-    text-align: center;
+.header-list li{
+    width: 100px;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--second-main-color);
+    cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .header-list li{
+    width: 70px;
+    font-size: 0.8rem;
+  }
+
+  .home-logo a {
+    font-size: 1.5rem;
+  }
 }
 
 .header-list a {
-    color: var(--second-main-color);
+  color: var(--second-main-color);
+}
+
+
+
+.header-list li:hover{
+  background-color: var(--second-main-color);
+}
+
+.header-list li:hover > a {
+  color: var(--main-color);
 }
 
 .main-font {
     font-family: var(--main-font);
 }
+
+.select-gender {
+  min-height: 2.8rem;
+  box-shadow: 0px 4px 15px -2px rgba(0, 0, 0);
+}
+
+
+.gender-list {
+  width: 100%;
+  display: flex;
+  min-height: 2.8rem;
+}
+
+.gender-list li {
+  width: 20%;
+}
+
+.gender-option {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: aliceblue;
+}
+
+.gender-option p {
+  width: fit-content;
+}
+
+.arrow-menu {
+  width: 20px;
+  height: 25px;
+  stroke: black;
+  stroke-width: 4px;
+  margin-left: 20px;
+  display: none;
+  transition-duration: 0.4s;
+}
+
+.show-arrow {
+  display: inline;
+}
+
+.open-arrow {
+  display: inline;
+  stroke: var(--main-color);
+  rotate: 90deg;
+}
+
+.hide-arrow {
+  display: none;
+}
+
+
+
+.gender-option::after {
+  content: "";
+  position: absolute;
+  background-color: var(--main-color);
+  display: block;
+  transition-duration: 0.2s;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, -100%);
+  height: 2px;
+  width: var(--afterWidth, 0px);
+  
+}
+
+.gender-option:hover::after {
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.content h5 {
+  font-size: 1rem;
+  font-weight: var(--fw-900);
+  letter-spacing: 1.1px;
+}
+
+.content ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.content a {
+  padding: 2px 12px;
+  transition-duration: 0.2s;
+  color: black;
+}
+
+.content a:hover {
+  background-color: lightgrey;
+}
+
+.filter-selection {
+  background-color: white;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  overflow-y: hidden;
+  transition-property: all;
+	transition-duration: 0.1s;
+  position: absolute;
+  max-height: 0px;
+  z-index: 2;
+  
+}
+
+.section-image {
+  max-width: 300px;
+}
+
+.opened {
+  transition-duration: 0.4s;
+  max-height: 350px;
+  border-bottom: 4px solid var(--main-color);
+  border-top: 1px solid gray;
+  padding: 1rem 0;
+}
+
+.filter-selection a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-selection svg {
+  display: inline;
+  width: 15px;
+  height: 15px;
+}
+
+h1 {
+  font-family: var(--main-font);
+  font-size: 6rem;
+  font-weight: var(--fw-900);
+  text-align: center;
+  color: var(--second-main-color);
+  letter-spacing: 2px;
+  background-color: var(--main-color);
+  text-shadow: -10px 6px 1px rgb(0, 0, 0);
+  margin-top: 30px;
+  cursor: default;
+}
+
+h2 {
+  font-family: var(--main-font);
+  font-size: 2rem;
+  font-weight: var(--fw-900);
+  text-align: center;
+  color: var(--main-color);
+  letter-spacing: 2px;
+  background-color: var(--second-main-color);
+  cursor: default;
+}
+
+.main-text-addition {
+  width: 100%;
+  height: 15px;
+  background-color: var(--main-color);
+}
+
+
+
 
