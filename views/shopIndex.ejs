@@ -20,8 +20,8 @@
     <header class="main-header main-font">
         <h3 class="home-logo"><a href="/home-page"><i>DAY-HYPE</i></a></h3>
         <ul role="list" class="header-list">
-            <li><a href="#">Log In</a></li>
-            <li><a href="#">Sign Up</a></li>
+            <li><a href="/login">Log In</a></li>
+            <li><a href="/register">Sign Up</a></li>
             <li><a href="#">About Us</a></li>
             <li><a href="#">Contact</a></li>
         </ul>
@@ -30,8 +30,8 @@
         <div class="mobile-scale-menu">
             <%- include("../public/images/close-x.svg")%>
             <ul role="list" class="header-list-mobile">
-                <li><a href="#">Log In</a></li>
-                <li><a href="#">Sign Up</a></li>
+                <li><a href="/login">Log In</a></li>
+                <li><a href="/register">Sign Up</a></li>
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Contact</a></li>
             </ul>
@@ -283,13 +283,13 @@
             <h3 class="new-coll">New Collection</h3>
             
         </div>
-        <img src="images/image-under-corousel.png" alt="">
+        <img class="new-coll-img" src="images/image-under-corousel.png" alt="">
         <div class="floor"></div>
         <footer class="animate">
             <h3 class="home-logo-footer"><i>DAY-HYPE</i></h3>
             <ul role="list" class="footer-ul list1">
-                <li><a href="">Log In</a></li>
-                <li><a href="">Create Account</a></li>
+                <li><a href="/login">Log In</a></li>
+                <li><a href="/register">Create Account</a></li>
                 <li><a href="">Contact Us</a></li>
                 <li><a href="">About us</a></li>
                 <li><a href="">Services</a></li>
@@ -304,21 +304,16 @@
             </ul>
             <div class="last-div-footer">
                 <ul role="list" data-type="media-icons" class="social-media">
-                    <li><a href="#"><img src="images/facebook.svg"></a></li>
-                    <li><a href="#"><img src="images/instagram.svg"></a></li>
-                    <li><a href="#"><img src="images/tiktok.svg"></a></li>
-                    <li><a href="#"><img src="images/twitch.svg"></a></li>
-                    <li><a href="#"><img src="images/twitter.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="images/facebook.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="images/instagram.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="images/tiktok.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="images/twitch.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="images/twitter.svg"></a></li>
                 </ul>
-
-                <p>Copyright © by Erik Gažovič, 2025</p>
-
+                <p>Copyright © by Erik Gažovič, <%= year %></p>
             </div>
-            
-            
         </footer>
     </section>
-
 </body>
 
 

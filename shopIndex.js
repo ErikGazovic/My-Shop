@@ -32,7 +32,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-/*const db = new pg.Client({
+const db = new pg.Client({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_DATABASE,
@@ -40,7 +40,7 @@ app.use(passport.session());
     port: process.env.DB_PORT,
   });
 
-db.connect();*/
+db.connect();
 
 app.get("/home-page", (req, res) => {
     res.render("shopIndex.ejs", {year: year});
@@ -79,9 +79,9 @@ app.post("/login", (req, res) => {
     })(req, res)
   });
 
-passport.use(new Strategy ({usernameField: "email", passwordField: "password"}, async function verify(email, password, cb) {
+passport.use(new Strategy ({usernameField: "username", passwordField: "password"}, async function verify(username, password, cb) {
     try {
-        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [username]);
         
         if (checkResult.rows.length > 0) {
             const user = checkResult.rows[0]; 
@@ -125,6 +125,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
+    const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
     const repPassword = req.body["rep-password"];
@@ -133,10 +134,17 @@ app.post("/register", async (req, res) => {
 
    
   try {
-    const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email,]);
-    if (checkResult.rows.length > 0) {
-        let message = "User with this email already exists";
-      res.render("register.ejs", {message: message});
+    const checkResultEmail = await db.query("SELECT * FROM users WHERE email = $1", [email,]);
+    const checkResultUsername = await db.query("SELECT * FROM users WHERE username = $1", [username,]);
+    if (checkResultEmail.rows.length > 0) {
+        let emailMessage = "User with this email already exists";
+        res.render("register.ejs", {emailMessage: emailMessage});
+    } else if (username.length < 6) {
+        let nameMessage = "Username is too short";
+        res.render("register.ejs", {nameMessage: nameMessage});
+    } else if (checkResultUsername.rows.length > 0) {
+        let nameMessage = "User with this name already exists";
+        res.render("register.ejs", {nameMessage: nameMessage});
     } else if (checkRegisterPassword(password, repPassword)[0] == false) {
         passwordMessage = checkRegisterPassword(password, repPassword)[1];
         res.render("register.ejs", {passwordMessage: passwordMessage});
@@ -148,8 +156,8 @@ app.post("/register", async (req, res) => {
                 res.send(err);
             } else {
                 const result = await db.query(
-                    "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *", 
-                    [email, hash]
+                    "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *", 
+                    [username, email, hash]
                 );
                 setTimeout(() => {
                     const user = result.rows[0];
