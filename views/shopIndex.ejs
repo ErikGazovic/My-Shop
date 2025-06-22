@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,
@@ -18,24 +18,62 @@
 </head>
 <body>
     <header class="main-header main-font">
-        <h3 class="home-logo"><a href="/home-page"><i>DAY-HYPE</i></a></h3>
-        <ul role="list" class="header-list">
-            <li><a href="/login">Log In</a></li>
-            <li><a href="/register">Sign Up</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-        <%- include("../public/images/burger-menu.svg")%>
         
-        <div class="mobile-scale-menu">
-            <%- include("../public/images/close-x.svg")%>
-            <ul role="list" class="header-list-mobile">
+        <% if (locals.username) { %>
+            <h3 class="home-logo"><a href="/home-page/<%= username %>"><i>DAY-HYPE</i></a></h3>
+                <ul role="list" class="header-list">
+                <li><a href="/logout">Log Out</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                <li><a href="/<%= username %>/my-cart"><%- include("../public/images/shopping-cart-icon.svg") %></a></li>
+                <li><a href="#" class="my-account-hover">My Account</a>
+                    <div class="show-account-menu">
+                        <% if (username === "Admin01") { %>
+                            <a href="/add-product/admin=<%= username  %>" class="show-account-a">Add Product</a>
+                        <% } %>
+                    </div>
+                </li>
+
+            </ul>
+            <%- include("../public/images/burger-menu.svg")%>
+
+            <div class="mobile-scale-menu">
+                <%- include("../public/images/close-x.svg")%>
+                <ul role="list" class="header-list-mobile">
+                    <li><a href="/logout">Log Out</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="/<%= username %>/my-cart">My Cart</a></li>
+                <li><a href="#" class="my-account-hover">My Account</a>
+                    <div class="show-account-menu">
+                        <% if (username === "Admin01") { %>
+                            <a href="/add-product/admin=<%= username  %>" class="show-account-a">Add Product</a>
+                        <% } %>
+                    </div>
+                </li> 
+                </ul>
+            </div>            
+        <% } else { %>
+            <h3 class="home-logo"><a href="/home-page"><i>DAY-HYPE</i></a></h3>
+            <ul role="list" class="header-list">
                 <li><a href="/login">Log In</a></li>
                 <li><a href="/register">Sign Up</a></li>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
             </ul>
-        </div>
+            <%- include("../public/images/burger-menu.svg")%>
+
+            <div class="mobile-scale-menu">
+                <%- include("../public/images/close-x.svg")%>
+                <ul role="list" class="header-list-mobile">
+                    <li><a href="/login">Log In</a></li>
+                    <li><a href="/register">Sign Up</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        <% } %>
+        
     </header>
     <div class="services">
         <div class="services-div">
@@ -60,7 +98,7 @@
             <li><button class="gender-option" value="5"><p>Unisex </p><%- include("../public/images/arrow-menu.svg")%></button></li>
         </ul>
     </nav>
-    
+    <% if (locals.username) {%>
     <nav class="big-filter">
         <div class="filter-selection women-selection">
             
@@ -68,187 +106,379 @@
             
                 <h5 class="main-font">Clothing</h5>
                 <ul role="list">
-                    <li><a href="#" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Dresses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Clothing&type=Jeans" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Clothing&type=Pyjamas" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Clothing&type=Dresses" class="main-font">Dresses <%- include("../public/images/arrow-menu.svg")%></a></li>
                 </ul>
             </div>
 
             <div class="content">
                 <h5 class="main-font">Shoes</h5>
                 <ul role="list">
-                    <li><a href="#" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Slingback <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Shoes&type=Boots" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Shoes&type=Slingback" class="main-font">Slingback <%- include("../public/images/arrow-menu.svg")%></a></li>
                 </ul>
             </div>
             
             <div class="content">
-                <h5 class="main-font">Accesories</h5>
+                <h5 class="main-font">Accessories</h5>
                 <ul role="list">
-                    <li><a href="#" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
-                    <li><a href="#" class="main-font">Handbags <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Accessories&type=Underwear" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Accessories&type=Jewelry" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/<%= username %>/filter/targetGroup=Women&category=Accessories&type=Handbags" class="main-font">Handbags <%- include("../public/images/arrow-menu.svg")%></a></li>
                 </ul>
             </div>
             <div class="section-image">
-                <img src="images/women-streetwear-image.png" alt="">
+                <img src="../images/women-streetwear-image.png" alt="">
             </div>
         </div>
         <div class="filter-selection men-selection">
                 <div class="content">
                     <h5 class="main-font">Clothing</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Suits <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Clothing&type=Jeans" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Clothing&type=Pyjamas" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Clothing&type=Suits" class="main-font">Suits <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
     
                 <div class="content">
                     <h5 class="main-font">Shoes</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Elegant Shoes <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Shoes&type=Boots" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Shoes&type=Elegant_Shoes" class="main-font">Elegant Shoes <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
                 
                 <div class="content">
-                    <h5 class="main-font">Accesories</h5>
+                    <h5 class="main-font">Accessories</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Wallets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Accessories&type=Underwear" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Accessories&type=Jewelry" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Men&category=Accessories&type=Wallets" class="main-font">Wallets <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
                 <div class="section-image">
-                    <img src="images/men-streetwear-image.png" alt="">
+                    <img src="../images/men-streetwear-image.png" alt="">
                 </div>
         </div>
         <div class="filter-selection girls-selection">
                 <div class="content">
                     <h5 class="main-font">Clothing</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Clothing&type=Jeans" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Clothing&type=Pyjamas" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Clothing&type=Dresses" class="main-font">Dresses <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
     
                 <div class="content">
                     <h5 class="main-font">Shoes</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Slingback <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Shoes&type=Boots" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Shoes&type=Slingback" class="main-font">Slingback <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
                 
                 <div class="content">
-                    <h5 class="main-font">Accesories</h5>
+                    <h5 class="main-font">Accessories</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Accessories&type=Underwear" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Girls&category=Accessories&type=Jewelry" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
                 <div class="section-image">
-                    <img src="images/girl-streetwear-image.png" alt="">
+                    <img src="../images/girl-streetwear-image.png" alt="">
                 </div>
         </div>
         <div class="filter-selection boys-selection">
                 <div class="content">
                     <h5 class="main-font">Clothing</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Clothing&type=Jeans" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Clothing&type=Pyjamas" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
     
                 <div class="content">
                     <h5 class="main-font">Shoes</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Elegant Shoes <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Shoes&type=Boots" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Shoes&type=Elegant_Shoes" class="main-font">Elegant Shoes <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
                 
                 <div class="content">
-                    <h5 class="main-font">Accesories</h5>
+                    <h5 class="main-font">Accessories</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Boys&category=Accessories&type=Underwear" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
                 <div class="section-image">
-                    <img src="images/boy-streetwear-image.png" alt="">
+                    <img src="../images/boy-streetwear-image.png" alt="">
                 </div>
         </div>
         <div class="filter-selection unisex-selection">
                 <div class="content">
                     <h5 class="main-font">Clothing</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
     
                 <div class="content">
                     <h5 class="main-font">Shoes</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
                 
                 <div class="content">
-                    <h5 class="main-font">Accesories</h5>
+                    <h5 class="main-font">Accessories</h5>
                     <ul role="list">
-                        <li><a href="#" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
-                        <li><a href="#" class="main-font">Wallets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Accessories&type=Jewelry" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/<%= username %>/filter/targetGroup=Unisex&category=Accessories&type=Wallets" class="main-font">Wallets <%- include("../public/images/arrow-menu.svg")%></a></li>
                     </ul>
                 </div>
                 <div class="section-image">
-                    <img src="images/unisex-streetwear-image.png" alt="">
+                    <img src="../images/unisex-streetwear-image.png" alt="">
                 </div>
         </div>
     </nav>
+    <% } else { %>
+    <nav class="big-filter">
+        <div class="filter-selection women-selection">
+            
+            <div class="content">
+            
+                <h5 class="main-font">Clothing</h5>
+                <ul role="list">
+                    <li><a href="/filter/targetGroup=Women&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Clothing&type=Jeans" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Clothing&type=Pyjamas" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Clothing&type=Dresses" class="main-font">Dresses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                </ul>
+            </div>
+
+            <div class="content">
+                <h5 class="main-font">Shoes</h5>
+                <ul role="list">
+                    <li><a href="/filter/targetGroup=Women&category=Shoes&type=Boots" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Shoes&type=Slingback" class="main-font">Slingback <%- include("../public/images/arrow-menu.svg")%></a></li>
+                </ul>
+            </div>
+            
+            <div class="content">
+                <h5 class="main-font">Accessories</h5>
+                <ul role="list">
+                    <li><a href="/filter/targetGroup=Women&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Accessories&type=Underwear" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Accessories&type=Jewelry" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    <li><a href="/filter/targetGroup=Women&category=Accessories&type=Handbags" class="main-font">Handbags <%- include("../public/images/arrow-menu.svg")%></a></li>
+                </ul>
+            </div>
+            <div class="section-image">
+                <img src="../images/women-streetwear-image.png" alt="">
+            </div>
+        </div>
+        <div class="filter-selection men-selection">
+                <div class="content">
+                    <h5 class="main-font">Clothing</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Men&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Clothing&type=Jeans" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Clothing&type=Pyjamas" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Clothing&type=Suits" class="main-font">Suits <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+    
+                <div class="content">
+                    <h5 class="main-font">Shoes</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Men&category=Shoes&type=Boots" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Shoes&type=Elegant_Shoes" class="main-font">Elegant Shoes <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+                
+                <div class="content">
+                    <h5 class="main-font">Accessories</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Men&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Accessories&type=Underwear" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Accessories&type=Jewelry" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Men&category=Accessories&type=Wallets" class="main-font">Wallets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+                <div class="section-image">
+                    <img src="../images/men-streetwear-image.png" alt="">
+                </div>
+        </div>
+        <div class="filter-selection girls-selection">
+                <div class="content">
+                    <h5 class="main-font">Clothing</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Girls&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Clothing&type=Jeans" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Clothing&type=Pyjamas" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Clothing&type=Dresses" class="main-font">Dresses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+    
+                <div class="content">
+                    <h5 class="main-font">Shoes</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Girls&category=Shoes&type=Boots" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Shoes&type=Slingback" class="main-font">Slingback <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+                
+                <div class="content">
+                    <h5 class="main-font">Accessories</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Girls&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Accessories&type=Underwear" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Girls&category=Accessories&type=Jewelry" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+                <div class="section-image">
+                    <img src="../images/girl-streetwear-image.png" alt="">
+                </div>
+        </div>
+        <div class="filter-selection boys-selection">
+                <div class="content">
+                    <h5 class="main-font">Clothing</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Boys&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Clothing&type=Jeans" class="main-font">Jeans <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Clothing&type=Pyjamas" class="main-font">Pyjamas <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+    
+                <div class="content">
+                    <h5 class="main-font">Shoes</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Boys&category=Shoes&type=Boots" class="main-font">Boots <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Shoes&type=Elegant_Shoes" class="main-font">Elegant Shoes <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+                
+                <div class="content">
+                    <h5 class="main-font">Accessories</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Boys&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Boys&category=Accessories&type=Underwear" class="main-font">Underwear <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+                <div class="section-image">
+                    <img src="../images/boy-streetwear-image.png" alt="">
+                </div>
+        </div>
+        <div class="filter-selection unisex-selection">
+                <div class="content">
+                    <h5 class="main-font">Clothing</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Unisex&category=Clothing&type=Jackets" class="main-font">Jackets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Unisex&category=Clothing&type=Hoodies" class="main-font">Hoodies <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Unisex&category=Clothing&type=T-Shirts" class="main-font">T-shirts <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Unisex&category=Clothing&type=Pants" class="main-font">Pants <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+    
+                <div class="content">
+                    <h5 class="main-font">Shoes</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Unisex&category=Shoes&type=Sneakers" class="main-font">Sneakers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Unisex&category=Shoes&type=Trainers" class="main-font">Trainers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Unisex&category=Shoes&type=Slippers" class="main-font">Slippers <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+                
+                <div class="content">
+                    <h5 class="main-font">Accessories</h5>
+                    <ul role="list">
+                        <li><a href="/filter/targetGroup=Unisex&category=Accessories&type=Hats" class="main-font">Hats <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Unisex&category=Accessories&type=Glasses" class="main-font">Glasses <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Unisex&category=Accessories&type=Jewelry" class="main-font">Jewelry <%- include("../public/images/arrow-menu.svg")%></a></li>
+                        <li><a href="/filter/targetGroup=Unisex&category=Accessories&type=Wallets" class="main-font">Wallets <%- include("../public/images/arrow-menu.svg")%></a></li>
+                    </ul>
+                </div>
+                <div class="section-image">
+                    <img src="../images/unisex-streetwear-image.png" alt="">
+                </div>
+        </div>
+    </nav>    
+    <% } %>
     <main>
         <h1><i>DAY-HYPE</i></h1>
         <h2><i>Explore Your Style</i></h2>
@@ -257,19 +487,19 @@
         <div class="corousel-container">
             
             <div class="corousel-img">
-                <img class="fade" src="images/corousel1.png" alt="">
+                <img class="fade" src="../images/corousel1.png" alt="">
                 <a href="#" class="explore-btn">Explore</a>
             </div>
             <div class="corousel-img fade">
-                <img class="fade"  src="images/corousel2.png" alt="">
+                <img class="fade"  src="../images/corousel2.png" alt="">
                 <a href="#" class="explore-btn">Explore</a>
             </div>
             <div class="corousel-img fade">
-                <img class="fade"  src="images/corousel3.png" alt="">
+                <img class="fade"  src="../images/corousel3.png" alt="">
                 <a href="#" class="explore-btn">Explore</a>
             </div>
             <div class="corousel-img fade">
-                <img class="fade"  src="images/corousel4.png" alt="">
+                <img class="fade"  src="../images/corousel4.png" alt="">
                 <a href="#" class="explore-btn">Explore</a>
             </div>
             <button class="corousel-button prev" onclick="plusDivs(-1)"><%- include("../public/images/arrow-menu.svg")%></button>
@@ -283,17 +513,28 @@
             <h3 class="new-coll">New Collection</h3>
             
         </div>
-        <img class="new-coll-img" src="images/image-under-corousel.png" alt="">
+        <img class="new-coll-img" src="../images/image-under-corousel.png" alt="">
         <div class="floor"></div>
         <footer class="animate">
             <h3 class="home-logo-footer"><i>DAY-HYPE</i></h3>
+            <% if (locals.username) {%>
+            <ul role="list" class="footer-ul list1">
+                <li><a href="/home-page/<%= username %>">Log In</a></li>
+                <li><a href="/register/<%= username %>">Create Account</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                <li><a href="">Services</a></li>
+            </ul>
+            <% } else { %>
             <ul role="list" class="footer-ul list1">
                 <li><a href="/login">Log In</a></li>
                 <li><a href="/register">Create Account</a></li>
-                <li><a href="">Contact Us</a></li>
-                <li><a href="">About us</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
                 <li><a href="">Services</a></li>
             </ul>
+            <% } %>
+
             <ul role="list" class="footer-ul list2">
                 <li><a href="">Men</a></li>
                 <li><a href="">Women</a></li>
@@ -304,11 +545,11 @@
             </ul>
             <div class="last-div-footer">
                 <ul role="list" data-type="media-icons" class="social-media">
-                    <li><a href="#"><img class="media-icon" src="images/facebook.svg"></a></li>
-                    <li><a href="#"><img class="media-icon" src="images/instagram.svg"></a></li>
-                    <li><a href="#"><img class="media-icon" src="images/tiktok.svg"></a></li>
-                    <li><a href="#"><img class="media-icon" src="images/twitch.svg"></a></li>
-                    <li><a href="#"><img class="media-icon" src="images/twitter.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/facebook.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/instagram.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/tiktok.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/twitch.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/twitter.svg"></a></li>
                 </ul>
                 <p>Copyright © by Erik Gažovič, <%= year %></p>
             </div>

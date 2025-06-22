@@ -20,56 +20,74 @@
     <header class="main-header main-font">
         <h3 class="home-logo"><a href="/home-page"><i>DAY-HYPE</i></a></h3>
         <ul role="list" class="header-list">
-            <li><a href="/login">Log In</a></li>
+            <li><a style="color: var(--main-color); background-color: var(--second-main-color)" href="/login">Log In</a></li>
             <li><a href="/register">Sign Up</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="/about-us">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
         </ul>
         <%- include("../public/images/burger-menu.svg")%>
         
         <div class="mobile-scale-menu">
             <%- include("../public/images/close-x.svg")%>
             <ul role="list" class="header-list-mobile">
-                <li><a href="/login">Log In</a></li>
+                <li><a style="color: rgb(243, 243, 243); background-color: var(--main-color)" href="/login">Log In</a></li>
                 <li><a href="/register">Sign Up</a></li>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact</a></li>
+            <li><a href="/about-us">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
             </ul>
         </div>
     </header>
     <main class="auth-main">
+            <% if ( locals.success ) {%>
+                <p class="added-to-cart-msg login-msg"><%= success %></p>
+            <% } else { %>
         <fieldset class="login-fieldset auth-fieldset">
+
             <form action="/login" method="POST" class="login-form auth-form">
                 <h3>Log In</h3>
                 <div class="form-div">
-                    <input type="text" name="username" placeholder="username" onclick="inputClick()" id="username">
+                    <input type="text" name="username" placeholder="username or email" onclick="inputClick()" id="username">
                     <img class="input-icon user-icon" src="images/user-icon.svg" alt="">
                 </div>
+                <% if (locals.message) {%>
+                    <p class="error-msg"><%= message %></p>
+                <% } %>                
                 <div class="form-div">
                     <input type="password" name="password" placeholder="password" id="password" onclick="inputClick()">
                     <img class="input-icon pass-icon" src="images/lock-icon.svg" alt="">
                     <img class="password-icon" src="images/visible-icon.svg" alt="" onclick="seePassword()">
                 </div>
-                
-                <div class="login-div">
-                <label class="remember-me">Remember Me
-                    <input type="checkbox" name="remember"/>
-                    <span class="my-checkbox"></span>
-                </label>
-                <a href="">Forgot Password?</a>
-                </div>
+                <% if (locals.passwordMessage) {%>
+                    <p class="error-msg"><%= passwordMessage %></p>
+                    <div class="login-div" style="margin-top: 0px;">
+                        <label class="remember-me">Remember Me
+                            <input type="checkbox" name="remember"/>
+                            <span class="my-checkbox"></span>
+                        </label>
+                        <a href="/forgot-pass">Forgot Password?</a>
+                    </div>
+                <% } else { %>
+                    <div class="login-div">
+                        <label class="remember-me">Remember Me
+                            <input type="checkbox" name="remember"/>
+                            <span class="my-checkbox"></span>
+                        </label>
+                        <a href="/forgot-pass">Forgot Password?</a>
+                    </div>
+                <% } %>
                 <input type="submit" class="submit-btn" value="Log In">
                 <p>Don't have an account? <a href="/register">Register</a></p>
             </form>
         </fieldset>
+        <% } %>
     </main>
     <footer class="login-footer">
             <h3 class="home-logo-footer"><i>DAY-HYPE</i></h3>
             <ul role="list" class="footer-ul list1">
                 <li><a href="/login">Log In</a></li>
                 <li><a href="/register">Create Account</a></li>
-                <li><a href="">Contact Us</a></li>
-                <li><a href="">About us</a></li>
+            <li><a href="/about-us">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
                 <li><a href="">Services</a></li>
             </ul>
             <ul role="list" class="footer-ul list2">
@@ -96,6 +114,13 @@
             
     </footer>
     <script>
+        if (document.querySelector(".added-to-cart-msg") !== undefined) {
+            setTimeout(() => {
+                document.querySelector(".added-to-cart-msg").style.opacity = "0";
+                document.querySelector(".added-to-cart-msg").style.cursor = "default";
+            }, 2500);
+        }
+
         const passwordInput = document.querySelector('#password');
         const eyeImg = document.querySelector('.password-icon');
 

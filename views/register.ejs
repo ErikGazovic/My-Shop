@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="../style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,
@@ -18,24 +18,47 @@
 </head>
 <body onclick="inputClick()">
     <header class="main-header main-font">
-        <h3 class="home-logo"><a href="/home-page"><i>DAY-HYPE</i></a></h3>
-        <ul role="list" class="header-list">
-            <li><a href="/login">Log In</a></li>
-            <li><a href="/register">Sign Up</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-        <%- include("../public/images/burger-menu.svg")%>
-        
-        <div class="mobile-scale-menu">
-            <%- include("../public/images/close-x.svg")%>
-            <ul role="list" class="header-list-mobile">
-                <li><a href="/login">Log In</a></li>
-                <li><a href="/register">Sign Up</a></li>
-                <li><a href="#">About Us</a></li>
+        <% if (locals.username) { %>
+            <h3 class="home-logo"><a href="/home-page/<%= username %>"><i>DAY-HYPE</i></a></h3>
+                <ul role="list" class="header-list">
+                <li><a href="/logout">Log Out</a></li>
+                <li><a href="/about-us/<%= username %>">About Us</a></li>
                 <li><a href="#">Contact</a></li>
+                <li><a href="/<%= username %>/my-cart"><%- include("../public/images/shopping-cart-icon.svg") %></a></li>
+                <li><a href="#">My Account</a></li>
             </ul>
-        </div>
+            <%- include("../public/images/burger-menu.svg")%>
+
+            <div class="mobile-scale-menu">
+                <%- include("../public/images/close-x.svg")%>
+                <ul role="list" class="header-list-mobile">
+                    <li><a href="/logout">Log Out</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="/<%= username %>/my-cart">My Cart</a></li>
+                    <li><a href="#">My Account</a></li>
+                </ul>
+            </div>            
+        <% } else { %>
+            <h3 class="home-logo"><a href="/home-page"><i>DAY-HYPE</i></a></h3>
+            <ul role="list" class="header-list">
+                <li><a href="/login">Log In</a></li>
+                <li><a style="color: var(--main-color); background-color: var(--second-main-color)" href="/register">Sign Up</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+            </ul>
+            <%- include("../public/images/burger-menu.svg")%>
+
+            <div class="mobile-scale-menu">
+                <%- include("../public/images/close-x.svg")%>
+                <ul role="list" class="header-list-mobile">
+                    <li><a href="/login">Log In</a></li>
+                    <li><a style="color: rgb(243, 243, 243); background-color: var(--main-color)" href="/register">Sign Up</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        <% } %>
     </header>
     <main class="auth-main register-main">
         <fieldset class="register-fieldset auth-fieldset">
@@ -43,22 +66,23 @@
                 <h3>Register</h3>
                 <div class="form-div">
                     <input type="text" name="username" placeholder="username" onclick="inputClick()" id="username">
-                    <img class="input-icon user-icon" src="images/user-icon.svg" alt="">
+                    <img class="input-icon user-icon" src="../images/user-icon.svg" alt="">
                 </div>
                 <% if (locals.nameMessage) {%>
                     <p class="error-msg"><%= nameMessage %></p>
                 <% } %>
+                <p style="color: rgb(73, 73, 73);">Please use your real email</p>
                 <div class="form-div">
                     <input type="email" name="email" placeholder="email" onclick="inputClick()" id="email">
-                    <img class="input-icon email-icon" src="images/email-icon.svg" alt="">
+                    <img class="input-icon email-icon" src="../images/email-icon.svg" alt="">
                 </div>
                 <% if (locals.emailMessage) {%>
                     <p class="error-msg"><%= emailMessage %></p>
                 <% } %>
                 <div class="form-div">
                     <input type="password" name="password" placeholder="password" id="password" onclick="inputClick()">
-                    <img class="input-icon pass-icon" src="images/lock-icon.svg" alt="">
-                    <img class="password-icon norep-icon" src="images/visible-icon.svg" alt="" onclick="seePassword()">
+                    <img class="input-icon pass-icon" src="../images/lock-icon.svg" alt="">
+                    <img class="password-icon norep-icon" src="../images/visible-icon.svg" alt="" onclick="seePassword()">
                 </div>
                 <% if (locals.passwordMessage) {%>
                     <p class="error-msg"><%= passwordMessage %></p>
@@ -75,26 +99,42 @@
                 <% } %>
 
                 <div class="form-div">
-                    <input type="password" name="rep-password" placeholder="repeat-password" id="rep-password" onclick="inputClick()">
-                    <img class="input-icon pass-icon rep-pass-icon" src="images/lock-icon.svg" alt="">
-                    <img class="password-icon rep-icon" src="images/visible-icon.svg" alt="" onclick="seePassword()">
+                    <input type="password" name="rep-password" placeholder="repeat password" id="rep-password" onclick="inputClick()">
+                    <img class="input-icon pass-icon rep-pass-icon" src="../images/lock-icon.svg" alt="">
+                    <img class="password-icon rep-icon" src="../images/visible-icon.svg" alt="" onclick="seePassword()">
                 </div>
-                
+                <% if (locals.username) { %>
+                     <input type="hidden" name="name" value="<%= username %>">
+                <% } %>
 
                 <input type="submit" class="submit-btn" value="Create Account">
-                <p>Already have an account? <a href="/login">Log In</a></p>
+                <% if (locals.username) { %>
+                    <p>Already have an account? <a href="/home-page/<%= username %>">Log In</a></p>
+                <% } else { %>
+                    <p>Already have an account? <a href="/login">Log In</a></p>
+                <% } %>
             </form>
         </fieldset>
     </main>
     <footer class="login-footer">
             <h3 class="home-logo-footer"><i>DAY-HYPE</i></h3>
+            <% if (locals.username) {%>
+            <ul role="list" class="footer-ul list1">
+                <li><a href="/home-page/<%= username %>">Log In</a></li>
+                <li><a href="/register/<%= username %>">Create Account</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a href="/contact/<%= username %>">Contact</a></li>
+                <li><a href="">Services</a></li>
+            </ul>
+            <% } else { %>
             <ul role="list" class="footer-ul list1">
                 <li><a href="/login">Log In</a></li>
                 <li><a href="/register">Create Account</a></li>
-                <li><a href="">Contact Us</a></li>
-                <li><a href="">About us</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
                 <li><a href="">Services</a></li>
             </ul>
+            <% } %>
             <ul role="list" class="footer-ul list2">
                 <li><a href="">Men</a></li>
                 <li><a href="">Women</a></li>
@@ -105,14 +145,14 @@
             </ul>
             <div class="last-div-footer">
                 <ul role="list" data-type="media-icons" class="social-media">
-                    <li><a href="#"><img class="media-icon" src="images/facebook.svg"></a></li>
-                    <li><a href="#"><img class="media-icon" src="images/instagram.svg"></a></li>
-                    <li><a href="#"><img class="media-icon" src="images/tiktok.svg"></a></li>
-                    <li><a href="#"><img class="media-icon" src="images/twitter.svg"></a></li>
-                    <li><a href="#"><img class="media-icon" src="images/twitch.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/facebook.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/instagram.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/tiktok.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/twitter.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/twitch.svg"></a></li>
                 </ul>
 
-                <p>Copyright © by Erik Gažovič, 2025</p>
+                <p>Copyright © by Erik Gažovič, <%= year %></p>
 
             </div>
             
@@ -120,7 +160,6 @@
     </footer>
     <script>
 
-        console.log(document.querySelector(".key-icon path"));
         const passwordInput = document.querySelector('#password');
         const repeatPasswordInput = document.querySelector('#rep-password');
         const eyeImg = document.querySelector('.norep-icon');
@@ -131,19 +170,19 @@
 
                 if (passwordInput.getAttribute('type') === "password") {
                     passwordInput.setAttribute('type', 'text');
-                    eyeImg.setAttribute('src', 'images/not-visible-icon.svg');
+                    eyeImg.setAttribute('src', '../images/not-visible-icon.svg');
                 } else {
                     passwordInput.setAttribute('type', 'password');
-                    eyeImg.setAttribute('src', 'images/visible-icon.svg');
+                    eyeImg.setAttribute('src', '../images/visible-icon.svg');
                 }
                 
             } else if (event.target.classList[1] === "rep-icon") {
                 if (repeatPasswordInput.getAttribute('type') === "password") {
                     repeatPasswordInput.setAttribute('type', 'text');
-                    repEyeImg.setAttribute('src', 'images/not-visible-icon.svg');
+                    repEyeImg.setAttribute('src', '../images/not-visible-icon.svg');
                 } else {
                     repeatPasswordInput.setAttribute('type', 'password');
-                    repEyeImg.setAttribute('src', 'images/visible-icon.svg');
+                    repEyeImg.setAttribute('src', '../images/visible-icon.svg');
                 }
             }
         }
@@ -209,7 +248,7 @@
             
         }
 
-        const burgerMenu = document.querySelector(".burger-menu");
+    const burgerMenu = document.querySelector(".burger-menu");
     const xButton = document.querySelector(".close-x");
     const mobileMenu = document.querySelector(".mobile-scale-menu");
 
