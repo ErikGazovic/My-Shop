@@ -40,7 +40,7 @@
     <main class="auth-main">
             <% if ( locals.success ) {%>
                 <p class="added-to-cart-msg login-msg"><%= success %></p>
-            <% } else { %>
+            <% } %>
         <fieldset class="login-fieldset auth-fieldset">
 
             <form action="/login" method="POST" class="login-form auth-form">
@@ -79,7 +79,6 @@
                 <p>Don't have an account? <a href="/register">Register</a></p>
             </form>
         </fieldset>
-        <% } %>
     </main>
     <footer class="login-footer">
             <h3 class="home-logo-footer"><i>DAY-HYPE</i></h3>

@@ -752,6 +752,7 @@
                         <li>XXL</li>                    
                     <% } %>
                 </ul>
+                <input type="hidden" name="product-size" value="" class="product-size">
                 <div class="add-somewhere">
 
                     <button class="add-to-cart-btn add-to-cart-big"><a href="/login" style="color: var(--second-main-color)">Add to cart</a></button>
@@ -895,17 +896,18 @@
             }
             }, 800);
         });
+
         
     } else if (document.querySelector(".add-somewhere") != null) {
 
-        if (document.querySelector(".added-to-cart-msg") !== undefined) {
+        if (document.querySelector(".added-to-cart-msg")) {
             setTimeout(() => {
                 document.querySelector(".added-to-cart-msg").style.opacity = "0";
                 document.querySelector(".added-to-cart-msg").style.cursor = "default";
             }, 2500);
         }
             
-    document.querySelector(".product-size").value = document.querySelector(".sizes-dropdown").innerText;
+        
 
 
         const heartButton = document.querySelector(".add-to-favorite");
@@ -916,7 +918,10 @@
         heartButton.addEventListener("click", function () {
             heart.classList.toggle("hearted");
         });
+
         const sizesBtn = document.querySelector(".sizes-dropdown");
+        
+                document.querySelector(".product-size").value = sizesBtn.innerText;
         const dropdownUl = document.querySelector(".dropdown-ul");
         const dropdownSizes = document.querySelectorAll(".dropdown-ul li");
         const addToCart = document.querySelector(".add-to-cart-big");
@@ -928,10 +933,8 @@
         for (let size of dropdownSizes) {
             size.addEventListener("click", function () {
                 let sizeValue = this.innerText;
-                sizesBtn.innerHTML = `<button class="sizes-dropdown" style="width: min(250px, 100%);">${sizeValue} <span><%- include("../public/images/arrow-menu.svg")%></span></button>` ;
+                sizesBtn.innerHTML = `${sizeValue} <%- include("../public/images/arrow-menu.svg")%>` ;
                 dropdownUl.classList.remove("dropdown-open");
-                sizesBtn.style.paddingInline = "0px";
-                sizesBtn.style.borderWidth = "0px";
             })
         };
 
@@ -1193,7 +1196,7 @@
 
     filter.addEventListener("mouseover", function () {
             orderList.style.display = "block";
-            orderList.style.zIndex = "1";
+            orderList.style.zIndex = "3";
             orderBtn.style.marginTop = "5px";
     });
 
@@ -1237,14 +1240,25 @@
             element4.style.transform = "translate(-50%, 0%)";
             element4.style.zIndex = "4";
             element2.style.stroke = "black";
-            element3.style.display = "block";
+            element3.style.display = "none";
             document.querySelector(".product-list").style.zIndex = "-1";
         }
     }
 
+    function openOrdering2(x) {
+        if (x.matches) {
+            document.querySelector(".search-product").style.zIndex = "-1";
+        }
+    }
+
+    var xMenu900 = window.matchMedia("(max-width: 900px)");
+
     orderBtn.addEventListener("click", function () {
         openOrdering(xMenu540, this, orderBtnArrow, orderList, filter);
+        openOrdering2(xMenu900);
     });
+
+
 
 
         var xMenu700 = window.matchMedia("(max-width: 700px)");

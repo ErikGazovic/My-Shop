@@ -1512,8 +1512,8 @@ background-color: rgb(255, 255, 255);
 
 .filter-products {
   grid-area: theFilter;
-  position: absolute;
   min-height: 100px;
+  position: absolute;
   width: 100%;
   left: 50%;
   transform: translate(-50%, 0%);
@@ -1563,6 +1563,10 @@ background-color: rgb(255, 255, 255);
   display: none;
   z-index: 5;
   margin-left: 5px;
+}
+
+.option-list.option-list-open {
+  display: block;
 }
 
 
@@ -1935,7 +1939,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 #vol:focus::-ms-fill-upper {
   background: aliceblue;
 }
-@media (max-width: 950px) {
+@media (max-width: 1000px) {
   .select-filter {
     width: 120px;
     height: 40px;
@@ -2126,7 +2130,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   background-color: #fbfbfb;
   margin-bottom: 4px;
   padding-inline: 3px;
-  width: 210px;
+  width: 80%;
   aspect-ratio: 5 / 7;
   position: relative;
 }
@@ -2136,7 +2140,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-width: 200px;
+  height: 80%;
 }
 
 .item-div p {
@@ -2208,9 +2212,14 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 @media (max-width: 1200px) {
   .product-list {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-auto-rows: 526px;
+    grid-auto-rows: auto;
   }
 
+
+  .item-div .img-div {
+    width: 70%;
+  }
+  
   .item-div {
     max-height: 526px;
   }
@@ -2219,7 +2228,11 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 @media (max-width: 1000px) {
   .product-list {
     grid-template-columns: 1fr 1fr ;
-    grid-auto-rows: 540px;
+    grid-auto-rows: auto;
+  }
+
+  .item-div .img-div {
+    width: 70%;
   }
 
   .item-div {
@@ -2238,9 +2251,6 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     font-family: 0.8rem;
   }
 
-  .item-div img {
-    width: 240px;
-  }
 
   .available-colors {
     margin: 4px 0px;
@@ -2354,6 +2364,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 90%;
 }
 
 .product-description { 
@@ -2411,7 +2422,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 
 .all-colors img {
   margin-top: 4px;
-  width: 100%;
+  width: 95%;
   flex-shrink: 0;
   border: 1px solid transparent;
   transition-duration: 0.1s;
