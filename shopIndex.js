@@ -157,10 +157,14 @@ CREATE TABLE IF NOT EXISTS orders (
 createTables().then(console.log("Tables created!"));
 
 app.get("/", (req, res) => {
+    res.redirect("/home-page");
+});
+
+app.get("/home-page", (req, res) => {
     res.render("index.ejs", {year: year});
 });
 
-app.get("/:username", (req, res) => {
+app.get("/home-page/:username", (req, res) => {
     const username = req.params.username;
     res.render("index.ejs", {year: year, username: username});
 });
@@ -1050,12 +1054,12 @@ app.post("/login", (req, res) => {
             req.session.isLoggedIn = true;
             if (req.body.remember === "on") {
                 setTimeout(() => {
-                    res.redirect(`/${username}`);
+                    res.redirect(`/home-page/${username}`);
                 }, 1000);
             } else {
                 req.session.cookie.maxAge = 1000;
                         setTimeout(() => {
-                            res.redirect(`/${username}`);
+                            res.redirect(`/home-page/${username}`);
                         }, 1000);
                     }
         } else {
@@ -1106,7 +1110,7 @@ app.get("/logout", (req, res) => {
       if (err) {
         return next(err);
       }
-      res.redirect("/");
+      res.redirect("/home-page");
     });
   });
 
@@ -1159,7 +1163,7 @@ app.post("/register", async (req, res) => {
                     const user = result.rows[0];
                     req.login(user, (err) => {
                         if (req.body.name) {
-                            res.redirect(`/${req.body.name}`);
+                            res.redirect(`/home-page/${req.body.name}`);
                         } else {
                             res.redirect(`/login`);
                         }
