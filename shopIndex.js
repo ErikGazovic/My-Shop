@@ -64,7 +64,7 @@ app.use(passport.session());
 //db.connect();
 
 async function createTables(params) {
-    await pool.query(`
+await pool.query(`
 CREATE TABLE IF NOT EXISTS products (
   id SERIAL PRIMARY KEY,
   image VARCHAR(100),
@@ -156,11 +156,11 @@ CREATE TABLE IF NOT EXISTS orders (
 
 createTables().then(console.log("Tables created!"));
 
-app.get("/home-page", (req, res) => {
+app.get("/", (req, res) => {
     res.render("index.ejs", {year: year});
 });
 
-app.get("/home-page/:username", (req, res) => {
+app.get("/:username", (req, res) => {
     const username = req.params.username;
     res.render("index.ejs", {year: year, username: username});
 });
@@ -1050,12 +1050,12 @@ app.post("/login", (req, res) => {
             req.session.isLoggedIn = true;
             if (req.body.remember === "on") {
                 setTimeout(() => {
-                    res.redirect(`/home-page/${username}`);
+                    res.redirect(`/${username}`);
                 }, 1000);
             } else {
                 req.session.cookie.maxAge = 1000;
                         setTimeout(() => {
-                            res.redirect(`/home-page/${username}`);
+                            res.redirect(`/${username}`);
                         }, 1000);
                     }
         } else {
@@ -1106,7 +1106,7 @@ app.get("/logout", (req, res) => {
       if (err) {
         return next(err);
       }
-      res.redirect("/home-page");
+      res.redirect("/");
     });
   });
 
@@ -1159,7 +1159,7 @@ app.post("/register", async (req, res) => {
                     const user = result.rows[0];
                     req.login(user, (err) => {
                         if (req.body.name) {
-                            res.redirect(`/home-page/${req.body.name}`);
+                            res.redirect(`/${req.body.name}`);
                         } else {
                             res.redirect(`/login`);
                         }
@@ -1290,13 +1290,6 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
-
-
-
-
-
-
-
 
 
 
