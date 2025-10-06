@@ -698,8 +698,8 @@ app.post("/:name/add-to-cart&id=:id", async (req, res) => {
 app.get("/:name/my-cart", async (req, res) => {
     const username = req.params.name;
     const loggedIn = true;
-    const userIDRaw = await pool.query("SELECT user_id FROM users WHERE username = $1", [req.params.name]);
-    const userID = userIDRaw.rows[0]["user_id"];
+    const userIDRaw = await pool.query("SELECT id FROM users WHERE username = $1", [req.params.name]);
+    const userID = userIDRaw.rows[0]["id"];
     const sizesRaw = await pool.query("SELECT size FROM cart WHERE user_id = $1", [userID]);
     const myItemsIdsRaw = await pool.query("SELECT product_id FROM cart WHERE user_id = $1", [userID]);
     const myItemsIds = [];
@@ -1299,6 +1299,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
