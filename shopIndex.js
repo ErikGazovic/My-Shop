@@ -88,6 +88,11 @@ CREATE TABLE IF NOT EXISTS users (
 )
 `);
 
+  await pool.query(`
+  ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS username VARCHAR(20)
+`);
+
 await pool.query(`
 CREATE TABLE IF NOT EXISTS product_storage (
   storage_id SERIAL PRIMARY KEY,
@@ -1294,6 +1299,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
