@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,
+        wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&
+        family=Cal+Sans&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&
+        family=Liter&family=Lora:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&
+        family=Playfair+Display:ital,wght@0,400..900;1,400..900&
+        family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&
+        family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <meta name="msapplication-square70x70logo" content=".../icons8-right arrow-win8-70.png">
+    <title>Day-Hype</title>
+</head>
+<body>
+    <header class="main-header main-font">
+        <% if (locals.username || locals.loggedIn) { %>
+            <h3 class="home-logo"><a href="/home-page/<%= username %>"><i>DAY-HYPE</i></a></h3>
+                <ul role="list" class="header-list">
+                <li><a href="/logout">Log Out</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a  href="#">Contact</a></li>
+                <li><a style="color: var(--main-color); background-color: var(--second-main-color)" href="/<%= username %>/my-cart"><%- include("../public/images/shopping-cart-icon.svg") %></a></li>
+                <li><a href="#" class="my-account-hover">My Account</a>
+                    <div class="show-account-menu">
+                        <% if (username === "Admin01") { %>
+                            <a href="/add-product/admin=<%= username  %>" class="show-account-a">Add Product</a>
+                        <% } %>
+                    </div>
+                </li>  
+            </ul>
+            <%- include("../public/images/burger-menu.svg")%>
+
+            <div class="mobile-scale-menu">
+                <%- include("../public/images/close-x.svg")%>
+                <ul role="list" class="header-list-mobile">
+                    <li><a href="/logout">Log Out</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a  href="#">Contact</a></li>
+                    <li><a href="/<%= username %>/my-cart">My Cart</a></li>
+                    <li><a href="#">My Account</a></li>
+                </ul>
+            </div>            
+        <% } else { %>
+            <h3 class="home-logo"><a href="/home-page"><i>DAY-HYPE</i></a></h3>
+            <ul role="list" class="header-list">
+                <li><a href="/login">Log In</a></li>
+                <li><a href="/register">Sign Up</a></li>
+                    <li><a  href="/about-us">About Us</a></li>
+                    <li><a  href="#">Contact</a></li>
+            </ul>
+            <%- include("../public/images/burger-menu.svg")%>
+
+            <div class="mobile-scale-menu">
+                <%- include("../public/images/close-x.svg")%>
+                <ul role="list" class="header-list-mobile">
+                    <li><a href="/login">Log In</a></li>
+                    <li><a href="/register">Sign Up</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        <% } %>
+        
+    </header>
+
+
+    <main class="cart-main">
+        
+        <div class="product-container">
+
+            <% for (var i = 0; i < itemsList.length; i++) {%>
+                <div class="yellow">
+                    <div class="product-to-buy">
+                    <div class="product-details">
+                        <form action="/delete" method="POST">
+                            <input type="hidden" name="username" value="<%= username %>">
+                            <input type="hidden" name="product-size" value="<%= itemsSizes[i] %>">
+                            <input type="hidden" name="product-id" value="<%= itemsList[i]["product_id"] %>">
+                            <button><%- include("../public/images/close-x.svg")%></button>
+                        </form>
+                        <div class="img-div">
+                            <img src="../images/product-images/<%= itemsList[i].image %>" alt="">
+                        </div>
+                        
+                        <div class="item-info">
+                            <p>Name: <span><%= itemsList[i]["product_name"] %></span></p>
+                            <p>Brand: <span><%= itemsList[i]["brand_name"] %></span></p>
+                            <p>Color: <span><%= itemsList[i]["color"] %></span></p>
+                            <p>Size: <span><%= itemsSizes[i] %></span></p>
+                        </div>
+                        <div class="price-div">
+                            <p>Price: <span><%= itemsList[i]["price"] %> $</span></p>   
+                        </div>
+                    </div>
+                    
+                    </div>
+                </div>
+                
+            <% } %>
+            <div class="yellow total-yellow">
+                <div class="product-to-buy product-to-buy-total">
+                    <p>TOTAL: <span>00.00 $</span></p>
+                </div>
+            </div>
+            <form action="/<%= username %>/purchase" method="POST">
+                <input type="hidden" name="total-price" value="">
+                <button class="buy" onclick="this.previousElementSibling.value = getTotalValue()">Purchase Item(s)</button>
+            </form>
+
+        </div>
+    </main>
+        <footer class="normal-footer">
+            <h3 class="home-logo-footer"><i>DAY-HYPE</i></h3>
+            <% if (locals.username) {%>
+            <ul role="list" class="footer-ul list1">
+                <li><a href="/home-page/<%= username %>">Log In</a></li>
+                <li><a href="/register/<%= username %>">Create Account</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a href="/contact/<%= username %>">Contact</a></li>
+                <li><a href="">Services</a></li>
+            </ul>
+            <% } else { %>
+            <ul role="list" class="footer-ul list1">
+                <li><a href="/login">Log In</a></li>
+                <li><a href="/register">Create Account</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                <li><a href="">Services</a></li>
+            </ul>
+            <% } %>
+            <ul role="list" class="footer-ul list2">
+                <li><a href="">Men</a></li>
+                <li><a href="">Women</a></li>
+                <li><a href="">Girls</a></li>
+                <li><a href="">Boys</a></li>
+                <li><a href="">Unisex</a></li>
+                <li><a href="">New Collection</a></li>
+            </ul>
+            <div class="last-div-footer">
+                <ul role="list" data-type="media-icons" class="social-media">
+                    <li><a href="#"><img class="media-icon" src="../images/facebook.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/instagram.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/tiktok.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/twitch.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/twitter.svg"></a></li>
+                </ul>
+                <p>Copyright © by Erik Gažovič, <%= year %></p>
+            </div>
+        </footer>
+        <script>
+            document.querySelector(".header-list .cart-icon").style.fill = "indigo";
+            const totolPrice = document.querySelector(".product-to-buy-total span");
+
+            const prices = document.querySelectorAll(".price-div span");
+
+
+            function getTotalValue() {
+                let total = 0;
+                let priceNum;
+                for (let price of prices) {
+                
+                    priceNum = parseFloat(price.innerText.split(" ")[0]);
+                    total += priceNum;
+                }
+            
+                return Math.round(total * 100) / 100;
+            }
+            
+            totolPrice.innerText = getTotalValue() + " $";
+            
+        </script>
+</body>
+</html>

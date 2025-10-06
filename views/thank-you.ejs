@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,
+        wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&
+        family=Cal+Sans&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&
+        family=Liter&family=Lora:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&
+        family=Playfair+Display:ital,wght@0,400..900;1,400..900&
+        family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&
+        family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <meta name="msapplication-square70x70logo" content=".../icons8-right arrow-win8-70.png">
+    <title>Day-Hype</title>
+</head>
+<body>
+<header class="main-header main-font">
+        <% if (locals.username || locals.loggedIn) { %>
+            <h3 class="home-logo"><a href="/home-page/<%= username %>"><i>DAY-HYPE</i></a></h3>
+                <ul role="list" class="header-list">
+                <li><a href="/logout">Log Out</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a  href="/contact/<%= username %>">Contact</a></li>
+                <li><a style="color: var(--main-color); background-color: var(--second-main-color)" href="/<%= username %>/my-cart"><%- include("../public/images/shopping-cart-icon.svg") %></a></li>
+                <li><a href="/my-account" class="my-account-hover">My Account</a>
+                    <div class="show-account-menu">
+                        <% if (username === "Admin01") { %>
+                            <a href="/add-product/admin=<%= username  %>" class="show-account-a">Add Product</a>
+                        <% } %>
+                    </div>
+                </li>  
+            </ul>
+            <%- include("../public/images/burger-menu.svg")%>
+
+            <div class="mobile-scale-menu">
+                <%- include("../public/images/close-x.svg")%>
+                <ul role="list" class="header-list-mobile">
+                    <li><a href="/logout">Log Out</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a style="color: var(--main-color); background-color: var(--second-main-color)" href="/contact/<%= username %>">Contact</a></li>
+                    <li><a href="/<%= username %>/my-cart">My Cart</a></li>
+                    <li><a href="/my-account">My Account</a></li>
+                </ul>
+            </div>            
+        <% } else { %>
+            <h3 class="home-logo"><a href="/home-page"><i>DAY-HYPE</i></a></h3>
+            <ul role="list" class="header-list">
+                <li><a href="/login">Log In</a></li>
+                <li><a href="/register">Sign Up</a></li>
+                    <li><a  href="/about-us">About Us</a></li>
+                    <li><a style="color: var(--main-color); background-color: var(--second-main-color)" href="/contact">Contact</a></li>
+            </ul>
+            <%- include("../public/images/burger-menu.svg")%>
+
+            <div class="mobile-scale-menu">
+                <%- include("../public/images/close-x.svg")%>
+                <ul role="list" class="header-list-mobile">
+                    <li><a href="/login">Log In</a></li>
+                    <li><a href="/register">Sign Up</a></li>
+                    <li><a style="color: rgb(243, 243, 243); background-color: var(--main-color)" href="/about-us">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+        <% } %>
+        
+    </header>
+    <main class="thanks-main">
+        <h2>Thank you for your purchase</h2>
+        
+        <p>You will recieve an email about your order</p>
+        <a href="/home-page/<%= username  %>">Continue Shopping</a>
+        <img src="../images/thank-you-gesture.png" alt="">
+    </main>
+        <footer class="normal-footer">
+            <h3 class="home-logo-footer"><i>DAY-HYPE</i></h3>
+            <% if (locals.username) {%>
+            <ul role="list" class="footer-ul list1">
+                <li><a href="/home-page/<%= username %>">Log In</a></li>
+                <li><a href="/register/<%= username %>">Create Account</a></li>
+                    <li><a href="/about-us/<%= username %>">About Us</a></li>
+                    <li><a href="/contact/<%= username %>">Contact</a></li>
+                <li><a href="">Services</a></li>
+            </ul>
+            <% } else { %>
+            <ul role="list" class="footer-ul list1">
+                <li><a href="/login">Log In</a></li>
+                <li><a href="/register">Create Account</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                <li><a href="">Services</a></li>
+            </ul>
+            <% } %>
+            <ul role="list" class="footer-ul list2">
+                <li><a href="">Men</a></li>
+                <li><a href="">Women</a></li>
+                <li><a href="">Girls</a></li>
+                <li><a href="">Boys</a></li>
+                <li><a href="">Unisex</a></li>
+                <li><a href="">New Collection</a></li>
+            </ul>
+            <div class="last-div-footer">
+                <ul role="list" data-type="media-icons" class="social-media">
+                    <li><a href="#"><img class="media-icon" src="../images/facebook.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/instagram.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/tiktok.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/twitch.svg"></a></li>
+                    <li><a href="#"><img class="media-icon" src="../images/twitter.svg"></a></li>
+                </ul>
+                <p>Copyright © by Erik Gažovič, <%= year %></p>
+            </div>
+        </footer>
+        <script>
+            const burgerMenu = document.querySelector(".burger-menu");
+    const xButton = document.querySelector(".close-x");
+    const mobileMenu = document.querySelector(".mobile-scale-menu");
+
+    burgerMenu.addEventListener("click", function () {
+        this.style.display = "none";
+        mobileMenu.style.width = "170px";
+        mobileMenu.style.borderLeft = "2px solid gray";
+    })
+
+    xButton.addEventListener("click", function () {
+        mobileMenu.style.width = "0px";
+        mobileMenu.style.borderLeft = "none";
+        burgerMenu.style.display = "block";
+    });
+
+
+    function myFunction(x) {
+            if (x.matches) {
+                burgerMenu.style.display = "block";
+            } else {
+                burgerMenu.style.display = "none";
+                mobileMenu.style.width = "0px";
+                mobileMenu.style.borderLeft = "none";
+            }
+        }
+
+
+        var x = window.matchMedia("(max-width: 500px)");
+
+        x.addEventListener("change", function() {
+            myFunction(x);
+        });
+
+        document.querySelector(".header-list .cart-icon").style.fill = "indigo";
+        </script>
+</body>
+</html>
