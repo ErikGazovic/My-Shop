@@ -68,8 +68,8 @@ async function createTables(params) {
     await pool.query("CREATE TABLE IF NOT EXISTS users ( id SERIAL PRIMARY KEY, username VARCHAR(20), email VARCHAR(50), password VARCHAR(100))");
     await pool.query("CREATE TABLE IF NOT EXISTS product_storage ( storage_id SERIAL PRIMARY KEY, XXS INTEGER, XS INTEGER, S INTEGER, M INTEGER, L INTEGER, XL INTEGER, XXL INTEGER, size27 INTEGER, size28 INTEGER, size29 INTEGER, size30 INTEGER, size31 INTEGER, size32 INTEGER, size33 INTEGER, size34 INTEGER, size35 INTEGER, size36 INTEGER, size37 INTEGER, size38 INTEGER, size39 INTEGER, size40 INTEGER, size41 INTEGER, size42 INTEGER, size43 INTEGER, size44 INTEGER, size45 INTEGER, size46 INTEGER, size47 INTEGER, product_id INT, CONSTRAINT fk_products FOREIGN KEY (product_id) REFERENCES products(id) )");
     await pool.query("CREATE TABLE IF NOT EXISTS brands ( id SERIAL PRIMARY KEY, brand_name VARCHAR(50), brand_logo VARCHAR(100) )");
-    await pool.query("CREATE TABLE IF NOT EXISTS cart ( cart_id SERIAL PRIMARY KEY, product_id INT REFERENCES products(id), user_id INT REFERENCES users(user_id), size VARCHAR(2) )");
-    await pool.query("CREATE TABLE IF NOT EXISTS orders ( order_id SERIAL PRIMARY KEY, user_id INTEGER, order_price float, CONSTRAINT fk_users FOREIGN KEY (user_id) REFERENCES users(user_id) )");
+    await pool.query("CREATE TABLE IF NOT EXISTS cart ( cart_id SERIAL PRIMARY KEY, product_id INT REFERENCES products(id), user_id INT REFERENCES users(id)), size VARCHAR(2) )");
+    await pool.query("CREATE TABLE IF NOT EXISTS orders ( order_id SERIAL PRIMARY KEY, user_id INTEGER, order_price float, CONSTRAINT fk_users FOREIGN KEY (user_id) REFERENCES users(id)) )");
 
 }
 
@@ -1209,6 +1209,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
