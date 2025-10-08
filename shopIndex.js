@@ -746,7 +746,7 @@ app.post("/:name/purchase", async (req, res) => {
 
 
     const recipient = `${req.params.name} <${email}>`;
- 
+     console.log(recipient);
     await transport.sendMail({
         from: "no-reply@example.com",
         to: recipient,
@@ -756,7 +756,7 @@ app.post("/:name/purchase", async (req, res) => {
     });
 
 
-
+      console.log("Email was send!");
     res.redirect(url.format({
         pathname: "/thank-you",
         query: {
@@ -1303,6 +1303,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
