@@ -6,10 +6,9 @@ import { Strategy } from "passport-local";
 import passport from "passport";
 import env from "dotenv";
 import url from "node:url";
-import { Resend } from "resend";
-const resend = new Resend("re_Z2tU1mSM_VA9e7gknB98ga5LRMtjEwkXZ");
-
 import pkg from "pg";
+const { Resend } = require('resend');
+const resend = new Resend("re_Z2tU1mSM_VA9e7gknB98ga5LRMtjEwkXZ");
 env.config();
 const { Pool } = pkg;
 
