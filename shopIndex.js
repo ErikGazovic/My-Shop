@@ -1077,7 +1077,7 @@ app.post("/:name/purchase", async (req, res) => {
 
     try {
       await resend.emails.send({
-        from: "no-reply@example.com",
+        from: "onboarding@resend.dev",
         to: email,
         subject: "THANK YOU FOR YOUR ORDER!",
         text: emailMessage,
@@ -1171,9 +1171,9 @@ app.post("/send-verification", async (req, res) => {
 
     try {
       await resend.emails.send({
-        from: "no-reply@example.com",
+        from: "onboarding@resend.dev",
         to: email,
-        subject: "YOUR VERIFiCATION CODE",
+        subject: "YOUR VERIFICATION CODE",
         text: emailMessage,
       });
       console.log("Email sent successfully!");
