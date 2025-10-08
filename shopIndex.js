@@ -1078,7 +1078,7 @@ app.post("/:name/purchase", async (req, res) => {
     try {
       await resend.emails.send({
         from: "no-reply@example.com",
-        to: recipient,
+        to: email,
         subject: "THANK YOU FOR YOUR ORDER!",
         text: emailMessage,
       });
@@ -1169,12 +1169,11 @@ app.post("/send-verification", async (req, res) => {
 
     let emailMessage = "Your verification code is: " + verificationCode;
 
-    const recipient = `${name} <${email}>`;
     try {
       await resend.emails.send({
         from: "no-reply@example.com",
-        to: recipient,
-        subject: "THANK YOU FOR YOUR ORDER!",
+        to: email,
+        subject: "YOUR VERIFiCATION CODE",
         text: emailMessage,
       });
       console.log("Email sent successfully!");
@@ -1744,4 +1743,3 @@ function checkRegisterPassword(password, reppeatedPassword) {
     return true;
   }
 }
-
