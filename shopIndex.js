@@ -777,6 +777,7 @@ app.get("/thank-you", (req, res) => {
 app.post("/delete", async (req, res) => {
     const productToDeleteID = parseInt(req.body["product-id"]);
     const productToDeleteSIZE = parseInt(req.body["product-size"]);
+  console.log(productToDeleteID, productToDeleteSIZE);
     const username = req.body.username;
     await pool.query("DELETE FROM cart WHERE cart_id IN (SELECT cart_id FROM cart WHERE product_id = $1 AND size = $2 LIMIT 1)", [productToDeleteID, productToDeleteSIZE]);
     res.redirect(`/${username}/my-cart`);
@@ -1301,6 +1302,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
