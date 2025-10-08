@@ -6,7 +6,8 @@ import { Strategy } from "passport-local";
 import passport from "passport";
 import env from "dotenv";
 import url from "node:url";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+const resend = new Resend("re_Z2tU1mSM_VA9e7gknB98ga5LRMtjEwkXZ");
 
 import pkg from "pg";
 env.config();
@@ -15,14 +16,6 @@ const { Pool } = pkg;
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
-});
-
-const transport = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "testemailpy2321@gmail.com",
-    pass: "parp bwld yecd qmbz",
-  },
 });
 
 const app = express();
@@ -1041,8 +1034,6 @@ app.get("/:name/my-cart", async (req, res) => {
   for (let size of sizesRaw.rows) {
     itemsSizes.push(size["size"]);
   }
-  console.log(itemsSizes);
-  console.log(itemsList);
 
   res.render("user-cart.ejs", {
     itemsSizes: itemsSizes,
@@ -1085,18 +1076,17 @@ app.post("/:name/purchase", async (req, res) => {
 
   const recipient = `${req.params.name} <${email}>`;
 
-  try {
-    await transport.sendMail({
-      from: "no-reply@example.com",
-      to: recipient,
-      subject: "THANK YOU FOR YOUR ORDER!",
-      text: emailMessage,
-      html: emailMessage,
-    });
-    console.log("Email sent successfully!");
-  } catch (err) {
-    console.error("Failed to send email:", err);
-  }
+    try {
+      await resend.emails.send({
+        from: "no-reply@example.com",
+        to: recipient,
+        subject: "THANK YOU FOR YOUR ORDER!",
+        text: emailMessage,
+      });
+      console.log("Email sent successfully!");
+    } catch (err) {
+      console.error("Failed to send email:", err);
+    }
 
   res.redirect(
     url.format({
@@ -1119,7 +1109,6 @@ app.get("/thank-you", (req, res) => {
 app.post("/delete", async (req, res) => {
   const productToDeleteID = parseInt(req.body["product-id"]);
   const productToDeleteSIZE = req.body["product-size"];
-  console.log(productToDeleteID, productToDeleteSIZE);
   const username = req.body.username;
   await pool.query(
     "DELETE FROM cart WHERE cart_id IN (SELECT cart_id FROM cart WHERE product_id = $1 AND size = $2 LIMIT 1)",
@@ -1182,18 +1171,17 @@ app.post("/send-verification", async (req, res) => {
     let emailMessage = "Your verification code is: " + verificationCode;
 
     const recipient = `${name} <${email}>`;
-try {
-  await transport.sendMail({
-    from: "no-reply@example.com",
-    to: recipient,
-    subject: "THANK YOU FOR YOUR ORDER!",
-    text: emailMessage,
-    html: emailMessage,
-  });
-  console.log("Email sent successfully!");
-} catch (err) {
-  console.error("Failed to send email:", err);
-}
+    try {
+      await resend.emails.send({
+        from: "no-reply@example.com",
+        to: recipient,
+        subject: "THANK YOU FOR YOUR ORDER!",
+        text: emailMessage,
+      });
+      console.log("Email sent successfully!");
+    } catch (err) {
+      console.error("Failed to send email:", err);
+    }
 
     res.redirect(
       url.format({
