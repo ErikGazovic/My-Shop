@@ -239,7 +239,7 @@ app.get("/filter/targetGroup=:group&category=:category&type=:type", async (req, 
     for (var i = 0; i < a.length; i++) {
         let newName = a[i];
         correspondingProductsNames = await pool.query("SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4", [group, category, type, newName]);
-        
+        console.log(correspondingProductsNames.rows[0].id);
         if (correspondingProductsNames.rowCount > 0) {
             for (let x of correspondingProductsNames.rows) {
                 if (correspondingProductsNames.rows.length > 1) {
@@ -1299,6 +1299,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
