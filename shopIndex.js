@@ -66,7 +66,7 @@ app.use(passport.session());
 async function createTables(params) {
 await pool.query(`
 CREATE TABLE IF NOT EXISTS products (
-  id SERIAL PRIMARY KEY,
+  product_id SERIAL PRIMARY KEY,
   image VARCHAR(100),
   product_name VARCHAR(50),
   target_group VARCHAR(10),
@@ -78,6 +78,8 @@ CREATE TABLE IF NOT EXISTS products (
   color VARCHAR(15)
 )
 `);
+
+
 
 await pool.query(`
 CREATE TABLE IF NOT EXISTS users (
@@ -125,7 +127,7 @@ CREATE TABLE IF NOT EXISTS product_storage (
   size46 INTEGER,
   size47 INTEGER,
   product_id INT,
-  CONSTRAINT fk_products FOREIGN KEY (product_id) REFERENCES products(id)
+  CONSTRAINT fk_products FOREIGN KEY (product_id) REFERENCES products(product_id)
 )
 `);
 
@@ -143,7 +145,7 @@ CREATE TABLE IF NOT EXISTS cart (
   product_id INT,
   user_id INT,
   size VARCHAR(2),
-  CONSTRAINT fk_cart_product FOREIGN KEY (product_id) REFERENCES products(id),
+  CONSTRAINT fk_cart_product FOREIGN KEY (product_id) REFERENCES products(product_id),
   CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES users(id)
 )
 `);
@@ -1299,6 +1301,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
