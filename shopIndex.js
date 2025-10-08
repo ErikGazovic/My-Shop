@@ -685,8 +685,8 @@ app.post("/:name/add-to-cart&id=:id", async (req, res) => {
     const type = req.body["product-type"];
     const category = req.body["product-category"];
 
-    const userIDRaw = await pool.query("SELECT user_id FROM users WHERE username = $1", [username]);
-    const userID = userIDRaw.rows[0]["user_id"];
+    const userIDRaw = await pool.query("SELECT id FROM users WHERE username = $1", [username]);
+    const userID = userIDRaw.rows[0]["id"];
     await pool.query("INSERT INTO cart (product_id, user_id, size) VALUES ($1, $2, $3)", [id, userID, size]);
 
     var successMsg = encodeURIComponent("Product was added to your cart");
@@ -724,8 +724,8 @@ app.get("/:name/my-cart", async (req, res) => {
 });
 
 app.post("/:name/purchase", async (req, res) => {
-    const userIDRaw = await db.query("SELECT user_id FROM users WHERE username = $1", [req.params.name]);
-    const userID = userIDRaw.rows[0]["user_id"];
+    const userIDRaw = await db.query("SELECT id FROM users WHERE username = $1", [req.params.name]);
+    const userID = userIDRaw.rows[0]["id"];
 
     await pool.query("INSERT INTO orders (user_id, order_price) VALUES ($1, $2)", [userID, req.body["total-price"]]);
     await pool.query("DELETE FROM cart WHERE user_id = $1", [userID]);
@@ -735,7 +735,7 @@ app.post("/:name/purchase", async (req, res) => {
     const orderID = orderIDRaw.rows[0]["order_id"];
 
 
-    const emailRaw = await pool.query("SELECT email FROM users WHERE user_id = $1", [userID]);
+    const emailRaw = await pool.query("SELECT email FROM users WHERE id = $1", [userID]);
     const email = emailRaw.rows[0]["email"];
     const emailMessage = `Order successful! Order id: ${orderID}, name of user: ${req.params.name}\n, total: ${req.body["total-price"]}` +
     "Thank you for trying my website <3\n" + 
