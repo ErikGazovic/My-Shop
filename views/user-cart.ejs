@@ -80,7 +80,7 @@
                         <form action="/delete" method="POST">
                             <input type="hidden" name="username" value="<%= username %>">
                             <input type="hidden" name="product-size" value="<%= itemsSizes[i] %>">
-                            <input type="hidden" name="product-id" value="<%= itemsList[i]["product_id"] %>">
+                            <input type="hidden" name="product-id" value="<%= itemsList[i]["id"] %>">
                             <button><%- include("../public/images/close-x.svg")%></button>
                         </form>
                         <div class="img-div">
@@ -176,3 +176,4 @@
         </script>
 </body>
 </html>
+
