@@ -66,7 +66,7 @@ app.use(passport.session());
 async function createTables(params) {
 await pool.query(`
 CREATE TABLE IF NOT EXISTS products (
-  product_id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   image VARCHAR(100),
   product_name VARCHAR(50),
   target_group VARCHAR(10),
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS product_storage (
   size46 INTEGER,
   size47 INTEGER,
   product_id INT,
-  CONSTRAINT fk_products FOREIGN KEY (product_id) REFERENCES products(product_id)
+  CONSTRAINT fk_products FOREIGN KEY (product_id) REFERENCES products(id)
 )
 `);
 
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS cart (
   product_id INT,
   user_id INT,
   size VARCHAR(2),
-  CONSTRAINT fk_cart_product FOREIGN KEY (product_id) REFERENCES products(product_id),
+  CONSTRAINT fk_cart_product FOREIGN KEY (product_id) REFERENCES products(id),
   CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES users(id)
 )
 `);
@@ -241,7 +241,7 @@ app.get("/filter/targetGroup=:group&category=:category&type=:type", async (req, 
     for (var i = 0; i < a.length; i++) {
         let newName = a[i];
         correspondingProductsNames = await pool.query("SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4", [group, category, type, newName]);
-        console.log(correspondingProductsNames.rows[0]["product_id"]);
+        console.log(correspondingProductsNames.rows[0].id);
         if (correspondingProductsNames.rowCount > 0) {
             for (let x of correspondingProductsNames.rows) {
                 if (correspondingProductsNames.rows.length > 1) {
@@ -390,7 +390,7 @@ app.get("/:name/filter/targetGroup=:group&category=:category&type=:type/id=:id",
         
 
     const correspondingProducts = await pool.query("SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
-    const clickedItem = await pool.query(`SELECT * FROM products WHERE product_id = ${id}`);
+    const clickedItem = await pool.query(`SELECT * FROM products WHERE id = ${id}`);
     res.render("products.ejs", {message: message, allBrands: allBrands, allColors: allColors, year: year, username: username, group: group, menu: listToSelect, category: category, type: type, id: id, clickedItem: clickedItem.rows[0], correspondingProducts: correspondingProducts.rows, imagesAndIDsAndNames: imagesAndIDsAndNames, colors: colors});
 });
 
@@ -424,7 +424,7 @@ app.get("/filter/targetGroup=:group&category=:category&type=:type/id=:id", async
         correspondingProductsNames = await pool.query("SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4", [group, category, type, newName]);
         if (correspondingProductsNames.rowCount > 0) {
             for ( let correspondingProduct of correspondingProductsNames.rows ) {
-                    imagesAndIDsAndNames.push([newName, [correspondingProduct.image, correspondingProduct["product_id"]]]);
+                    imagesAndIDsAndNames.push([newName, [correspondingProduct.image, correspondingProduct["id"]]]);
             }
         }
 
@@ -462,7 +462,7 @@ app.get("/filter/targetGroup=:group&category=:category&type=:type/id=:id", async
 
     const correspondingProducts = await pool.query("SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
 
-    const clickedItem = await pool.query(`SELECT * FROM products WHERE product_id = ${id}`);
+    const clickedItem = await pool.query(`SELECT * FROM products WHERE id = ${id}`);
     res.render("products.ejs", { allBrands: allBrands, allColors: allColors, year: year, group: group, menu: listToSelect, category: category, type: type, id: id, clickedItem: clickedItem.rows[0], correspondingProducts: correspondingProducts.rows, imagesAndIDsAndNames: imagesAndIDsAndNames, colors: colors});
 });
 
@@ -521,40 +521,40 @@ app.post("/filter/targetGroup=:group&category=:category&type=:type&filtered-prod
         }
 
     }
-    let correspondingProducts = await pool.query("SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
+    let correspondingProducts = await pool.query("SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
     if (brand && color && price && size) {
         
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6 AND ${size} > 0`, [group, category, type, brand, color, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6 AND ${size} > 0`, [group, category, type, brand, color, price]);
     } else if (brand && color && price && !size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6`, [group, category, type, brand, color, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6`, [group, category, type, brand, color, price]);
     } else if (brand && color && !price && size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND ${size} > 0`, [group, category, type, brand, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND ${size} > 0`, [group, category, type, brand, color]);
     } else if (brand && !color && price && size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5 AND ${size} > 0`, [group, category, type, brand, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5 AND ${size} > 0`, [group, category, type, brand, price]);
     } else if (!brand && color && price && size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4 AND price <= $5 AND ${size} > 0`, [group, category, type, color, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4 AND price <= $5 AND ${size} > 0`, [group, category, type, color, price]);
     } else if (brand && color && !price && !size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5`, [group, category, type, brand, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5`, [group, category, type, brand, color]);
     } else if (brand && !color && !price && size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND ${size} > 0`, [group, category, type, brand]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND ${size} > 0`, [group, category, type, brand]);
     } else if (!brand && !color && price && size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $5 AND ${size} > 0`, [group, category, type, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $5 AND ${size} > 0`, [group, category, type, price]);
     } else if (brand && !color && price && !size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5`, [group, category, type, brand, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5`, [group, category, type, brand, price]);
     } else if (!brand && color && !price && size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0 AND color = $4`, [group, category, type, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0 AND color = $4`, [group, category, type, color]);
     } else if (!brand && color && price && !size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4 AND color = $5`, [group, category, type, price, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4 AND color = $5`, [group, category, type, price, color]);
     } else if (!brand && !color && !price && size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0`, [group, category, type]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0`, [group, category, type]);
     } else if (brand && !color && !price && !size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name <= $4`, [group, category, type, brand]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name <= $4`, [group, category, type, brand]);
     } else if (!brand && color && !price && !size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4`, [group, category, type, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4`, [group, category, type, color]);
     } else if (!brand && !color && price && !size) {
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4`, [group, category, type, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4`, [group, category, type, price]);
     } else {
-        correspondingProducts = await pool.query("SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
+        correspondingProducts = await pool.query("SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
     }
     
     
@@ -621,55 +621,55 @@ app.post("/:name/filter/targetGroup=:group&category=:category&type=:type&filtere
 
     }
 
-    let correspondingProducts = await pool.query("SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
+    let correspondingProducts = await pool.query("SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
     if (brand && color && price && size) {
    
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6 AND ${size} > 0`, [group, category, type, brand, color, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6 AND ${size} > 0`, [group, category, type, brand, color, price]);
     } else if (brand && color && price && !size) {
 ;
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6`, [group, category, type, brand, color, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6`, [group, category, type, brand, color, price]);
     } else if (brand && color && !price && size) {
 
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND ${size} > 0`, [group, category, type, brand, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND ${size} > 0`, [group, category, type, brand, color]);
     } else if (brand && !color && price && size) {
 
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5 AND ${size} > 0`, [group, category, type, brand, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5 AND ${size} > 0`, [group, category, type, brand, price]);
     } else if (!brand && color && price && size) {
    
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4 AND price <= $5 AND ${size} > 0`, [group, category, type, color, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4 AND price <= $5 AND ${size} > 0`, [group, category, type, color, price]);
     } else if (brand && color && !price && !size) {
 
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5`, [group, category, type, brand, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5`, [group, category, type, brand, color]);
     } else if (brand && !color && !price && size) {
    
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND ${size} > 0`, [group, category, type, brand]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND ${size} > 0`, [group, category, type, brand]);
     } else if (!brand && !color && price && size) {
     
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $5 AND ${size} > 0`, [group, category, type, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $5 AND ${size} > 0`, [group, category, type, price]);
     } else if (brand && !color && price && !size) {
    
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5`, [group, category, type, brand, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5`, [group, category, type, brand, price]);
     } else if (!brand && color && !price && size) {
    
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0 AND color = $4`, [group, category, type, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0 AND color = $4`, [group, category, type, color]);
     } else if (!brand && color && price && !size) {
    
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4 AND color = $5`, [group, category, type, price, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4 AND color = $5`, [group, category, type, price, color]);
     } else if (!brand && !color && !price && size) {
 
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0`, [group, category, type]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0`, [group, category, type]);
     } else if (brand && !color && !price && !size) {
  
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name <= $4`, [group, category, type, brand]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name <= $4`, [group, category, type, brand]);
     } else if (!brand && color && !price && !size) {
     
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4`, [group, category, type, color]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4`, [group, category, type, color]);
     } else if (!brand && !color && price && !size) {
    
-        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4`, [group, category, type, price]);
+        correspondingProducts = await pool.query(`SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4`, [group, category, type, price]);
     } else {
  
-        correspondingProducts = await pool.query("SELECT * FROM products JOIN product_storage ON products.product_id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
+        correspondingProducts = await pool.query("SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3", [group, category, type]);
     }
 
 
@@ -711,7 +711,7 @@ app.get("/:name/my-cart", async (req, res) => {
     let allItemsInCart;
     let itemsList = []
     for (let itemId of myItemsIds) {
-        allItemsInCart = await pool.query("SELECT * FROM products WHERE product_id = $1", [itemId]);
+        allItemsInCart = await pool.query("SELECT * FROM products WHERE id = $1", [itemId]);
         itemsList.push(allItemsInCart.rows[0]);
     }
     let itemsSizes = [];
@@ -999,7 +999,7 @@ app.post("/add-product", async (req, res) => {
                 const addProduct = await pool.query("INSERT INTO products (image, product_name, target_group, category, product_type, brand_logo, brand_name, price, color) VALUES" +
                 "($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [product.productImg, product.productName,
                 product.productTargetGroup, product.productCategory, product.prdouctType, brandLogo.rows[0]["brand_logo"], brandLogo.rows[0]["brand_name"], product.prodcutPrice ,product.productColor]);
-                productSizes.push(addProduct.rows[0]["product_id"]);
+                productSizes.push(addProduct.rows[0]["id"]);
                 if (productSizes.length <= 8) {
                     await pool.query("INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" + 
                         "($1, $2, $3, $4, $5, $6, $7, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, $8)", productSizes);
@@ -1301,12 +1301,6 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
-
-
-
-
-
-
 
 
 
