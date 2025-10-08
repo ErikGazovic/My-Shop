@@ -7,7 +7,7 @@ import passport from "passport";
 import env from "dotenv";
 import url from "node:url";
 import pkg from "pg";
-const { Resend } = require('resend');
+import { Resend } from "resend";
 const resend = new Resend("re_Z2tU1mSM_VA9e7gknB98ga5LRMtjEwkXZ");
 env.config();
 const { Pool } = pkg;
@@ -1744,3 +1744,4 @@ function checkRegisterPassword(password, reppeatedPassword) {
     return true;
   }
 }
+
