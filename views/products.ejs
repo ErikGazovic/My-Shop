@@ -579,7 +579,7 @@
         <div class="product-list">
             <% for (let product of correspondingProducts) { %>
                 <% if (locals.username) { %>
-                    <a href="./targetGroup=<%= product["target_group"] %>&category=<%= product.category %>&type=<%= product["product_type"] %>/id=<%= product["product_id"]%>">
+                    <a href="./targetGroup=<%= product["target_group"] %>&category=<%= product.category %>&type=<%= product["product_type"] %>/id=<%= product["id"]%>">
                         <div class="item-div">
                             <div class="img-div">
                                 <img src="../../images/product-images/<%= product.image %>" alt="">
@@ -602,7 +602,7 @@
                         </div>
                      </a>
                 <% } else { %>
-                    <a href="/filter/targetGroup=<%= product["target_group"] %>&category=<%= product.category %>&type=<%= product["product_type"] %>/id=<%= product["product_id"]%>">
+                    <a href="/filter/targetGroup=<%= product["target_group"] %>&category=<%= product.category %>&type=<%= product["product_type"] %>/id=<%= product["id"]%>">
                         <div class="item-div">
                             <div class="img-div">
                                 <img src="../../images/product-images/<%= product.image %>" alt="">
