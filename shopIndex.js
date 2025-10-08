@@ -36,7 +36,8 @@ const year = new Date().getFullYear();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(session({
     secret: process.env.SESSION_SECRET || "defaultsecret",
@@ -1302,6 +1303,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
