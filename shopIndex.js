@@ -720,6 +720,9 @@ app.get("/:name/my-cart", async (req, res) => {
         itemsSizes.push(size["size"]);
     }
 
+      console.log(itemsSizes);
+    console.log(itemsList);
+
     res.render("user-cart.ejs", {itemsSizes: itemsSizes, itemsList: itemsList, year: year, loggedIn: loggedIn, username: username});
 });
 
@@ -1302,6 +1305,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
