@@ -724,7 +724,7 @@ app.get("/:name/my-cart", async (req, res) => {
 });
 
 app.post("/:name/purchase", async (req, res) => {
-    const userIDRaw = await db.query("SELECT id FROM users WHERE username = $1", [req.params.name]);
+    const userIDRaw = await pool.query("SELECT id FROM users WHERE username = $1", [req.params.name]);
     const userID = userIDRaw.rows[0]["id"];
 
     await pool.query("INSERT INTO orders (user_id, order_price) VALUES ($1, $2)", [userID, req.body["total-price"]]);
@@ -778,7 +778,7 @@ app.post("/delete", async (req, res) => {
     const productToDeleteID = req.body["product-id"];
     const productToDeleteSIZE = req.body["product-size"];
     const username = req.body.username;
-    await db.query("DELETE FROM cart WHERE cart_id IN (SELECT cart_id FROM cart WHERE product_id = $1 AND size = $2 LIMIT 1)", [productToDeleteID, productToDeleteSIZE]);
+    await pool.query("DELETE FROM cart WHERE cart_id IN (SELECT cart_id FROM cart WHERE product_id = $1 AND size = $2 LIMIT 1)", [productToDeleteID, productToDeleteSIZE]);
     res.redirect(`/${username}/my-cart`);
 });
 
@@ -1301,6 +1301,7 @@ function checkRegisterPassword (password, reppeatedPassword) {
     }
     
 }
+
 
 
 
