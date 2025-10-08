@@ -109,7 +109,7 @@
             </div>
             <form action="/<%= username %>/purchase" method="POST">
                 <input type="hidden" name="total-price" value="">
-                <button class="buy" onclick="this.previousElementSibling.value = getTotalValue()">Purchase Item(s)</button>
+                <button type="submit" class="buy" onclick="this.previousElementSibling.value = getTotalValue()">Purchase Item(s)</button>
             </form>
 
         </div>
@@ -176,4 +176,5 @@
         </script>
 </body>
 </html>
+
 
