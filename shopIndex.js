@@ -1320,12 +1320,9 @@ app.post(
     { name: "brandLogo", maxCount: 1 },
   ]),
   async (req, res) => {
-    console.log(req.headers["content-type"]);
     const username = req.body.username;
     let brandImageExists;
     let product;
-    console.log("FILES:", req.files);
-    console.log("BODY:", req.body);
     if (req.body.brandLogo !== "") {
       const productImg = req.files.img ? req.files.img[0].filename : null;
 
@@ -1382,7 +1379,7 @@ app.post(
     }
 
     try {
-      await pool.query(
+      let resultNameColor = await pool.query(
         "SELECT * FROM products WHERE product_name = $1 AND color = $2",
         [product.productName, product.productColor],
       );
@@ -1455,6 +1452,7 @@ app.post(
               productSizes,
             );
           }
+          console.log("Added to database... redirecting...");
 
           res.render(`add-product.ejs`, {
             successMsg: "Product was added to database",
@@ -1508,6 +1506,7 @@ app.post(
                 productSizes,
               );
             }
+            console.log("Added to database... redirecting...");
             res.render(`add-product.ejs`, {
               successMsg: "Product was added to database",
               allClothes: allItemsType,
