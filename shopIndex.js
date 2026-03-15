@@ -1320,6 +1320,7 @@ app.post(
     { name: "brandLogo", maxCount: 1 },
   ]),
   async (req, res) => {
+    console.log(req.headers["content-type"]);
     const username = req.body.username;
     let brandImageExists;
     let product;
