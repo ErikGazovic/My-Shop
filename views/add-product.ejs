@@ -64,7 +64,7 @@
 
     
     <main class="add-product-main">
-        <form action="/add-product" method="POST" class="add-product-form">
+        <form action="/add-product" method="POST" class="add-product-form"  enctype="multipart/form-data">
             <% if (locals.successMsg) { %>
                 <p class="add-msg add-success "><%= successMsg %></p>
             <% } else if (locals.failMsg) {%>
@@ -75,10 +75,10 @@
                 <label for="img">Select image:</label>
                 <p style="color: red; width: 350px; font-size: 0.8rem;">IMPORTANT! Choose image from folder on your Desktop! <br>
                 Cut the portrait images to 5/7 ratio and landscape images to 5/4 ratio</p>
-                <div  onclick="document.getElementById('getFile').click()" class="image-input" >
+                <div  onclick="document.getElementById('img').click()" class="image-input" >
                     <%- include("../public/images/tshirt-icon.svg") %>
                     <img src="#" alt="previewImage" id="previewImage">
-                    <input type="file" id="img" name="img" accept="image/*" required>
+                    <input type="file" id="img" name="img" accept="image/png,image/jpeg" required>
                     <%- include("../public/images/close-x.svg") %>
                 </div>
                 
@@ -112,10 +112,10 @@
 
             <div class="third-column">
                 <label for="brandLogo">Brand Logo (if new brand):</label>
-                <div  onclick="document.getElementById('getFile').click()" class="logo-input" >
+                <div  onclick="document.getElementById('brandLogo').click()" class="logo-input" >
                     <p>LOGO</p>
                     <img src="#" alt="previewLogo" id="previewLogo">
-                    <input type="file" accept="image/*" id="brandLogo" name="brandLogo">
+                    <input type="file" id="brandLogo" name="brandLogo"  accept="image/png,image/jpeg">
                     <%- include("../public/images/close-x.svg") %>
                 </div>
                 
