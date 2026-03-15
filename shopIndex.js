@@ -1324,8 +1324,8 @@ app.post(
     let brandImageExists;
     let product;
     if (req.body.brandLogo !== "") {
-      const productImg = req.files.productImg
-        ? req.files.productImg[0].filename
+      const productImg = req.files.img
+        ? req.files.img[0].filename
         : null;
 
       const brandLogo = req.files.brandLogo
@@ -1345,8 +1345,8 @@ app.post(
       };
     } else {
       brandImageExists = false;
-      const productImg = req.files.productImg
-        ? req.files.productImg[0].filename
+      const productImg = req.files.img
+        ? req.files.img[0].filename
         : null;
       product = {
         productImg: productImg,
