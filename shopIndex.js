@@ -1528,11 +1528,11 @@ passport.use(
     async function verify(username, password, cb) {
       try {
         const checkResultUsername = await pool.query(
-          "SELECT * FROM users WHERE username = $1",
+          "SELECT * FROM shop_users WHERE username = $1",
           [username],
         );
         const checkResultEmail = await pool.query(
-          "SELECT * FROM users WHERE email = $1",
+          "SELECT * FROM shop_users WHERE email = $1",
           [username],
         );
 
