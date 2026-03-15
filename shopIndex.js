@@ -1323,10 +1323,10 @@ app.post(
     const username = req.body.username;
     let brandImageExists;
     let product;
+    console.log("FILES:", req.files);
+    console.log("BODY:", req.body);
     if (req.body.brandLogo !== "") {
-      const productImg = req.files.img
-        ? req.files.img[0].filename
-        : null;
+      const productImg = req.files.img ? req.files.img[0].filename : null;
 
       const brandLogo = req.files.brandLogo
         ? req.files.brandLogo[0].filename
@@ -1345,9 +1345,7 @@ app.post(
       };
     } else {
       brandImageExists = false;
-      const productImg = req.files.img
-        ? req.files.img[0].filename
-        : null;
+      const productImg = req.files.img ? req.files.img[0].filename : null;
       product = {
         productImg: productImg,
         productName: req.body.productName,
