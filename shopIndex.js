@@ -49,7 +49,7 @@ app.use(passport.session());
 
 const productStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    if (file.fieldname === "productImg") {
+    if (file.fieldname === "img") {
       cb(null, "public/images/product-images");
     } else if (file.fieldname === "brandLogo") {
       cb(null, "public/images/brand-images");
