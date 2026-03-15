@@ -1316,7 +1316,7 @@ app.get("/add-product/admin=:admin", (req, res) => {
 app.post(
   "/add-product",
   upload.fields([
-    { name: "productImg", maxCount: 1 },
+    { name: "img", maxCount: 1 },
     { name: "brandLogo", maxCount: 1 },
   ]),
   async (req, res) => {
