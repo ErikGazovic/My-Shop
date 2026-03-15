@@ -9,6 +9,9 @@ import env from "dotenv";
 import url from "node:url";
 import pkg from "pg";
 import { Resend } from "resend";
+
+import multer from "multer";
+import path from "path";
 const resend = new Resend("re_Z2tU1mSM_VA9e7gknB98ga5LRMtjEwkXZ");
 const localStorage = new LocalStorage("./scratch");
 env.config();
@@ -43,6 +46,22 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+const productStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    if (file.fieldname === "productImg") {
+      cb(null, "public/images/product-images");
+    } else if (file.fieldname === "brandLogo") {
+      cb(null, "public/images/brand-images");
+    }
+  },
+  filename: function (req, file, cb) {
+    const uniqueName = Date.now() + path.extname(file.originalname);
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({ storage: productStorage });
 
 // ADD YOUR OWN CREDENCIALS !!! //
 
@@ -1294,153 +1313,120 @@ app.get("/add-product/admin=:admin", (req, res) => {
   });
 });
 
-app.post("/add-product", async (req, res) => {
-  const username = req.body.username;
-  let brandImageExists;
-  let product;
-  if (req.body.brandLogo !== "") {
-    brandImageExists = true;
-    product = {
-      productImg: req.body.img,
-      productName: req.body.productName,
-      productTargetGroup: req.body.targetGroup,
-      productCategory: req.body.productCategory,
-      prdouctType: req.body.productType,
-      productLogoImg: req.body.brandLogo,
-      productBrandName: req.body.brandName,
-      prodcutPrice: parseFloat(req.body.setPrice),
-      productColor: req.body.setColor,
-    };
-  } else {
-    brandImageExists = false;
-    product = {
-      productImg: req.body.img,
-      productName: req.body.productName,
-      productTargetGroup: req.body.targetGroup,
-      productCategory: req.body.productCategory,
-      prdouctType: req.body.productType,
-      productBrandName: req.body.brandName,
-      prodcutPrice: parseFloat(req.body.setPrice),
-      productColor: req.body.setColor,
-    };
-  }
-  let productSizes;
-  if (
-    req.body.productCategory == "Clothing" ||
-    req.body.productCategory == "Accessories"
-  ) {
-    productSizes = [
-      parseInt(req.body.xxsAmount),
-      parseInt(req.body.xsAmount),
-      parseInt(req.body.sAmount),
-      parseInt(req.body.mAmount),
-      parseInt(req.body.lAmount),
-      parseInt(req.body.xlAmount),
-      parseInt(req.body.xxlAmount),
-    ];
-  }
-  if (req.body.productCategory == "Shoes") {
-    productSizes = [];
+app.post(
+  "/add-product",
+  upload.fields([
+    { name: "productImg", maxCount: 1 },
+    { name: "brandLogo", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    const username = req.body.username;
+    let brandImageExists;
+    let product;
+    if (req.body.brandLogo !== "") {
+      const productImg = req.files.productImg
+        ? req.files.productImg[0].filename
+        : null;
 
-    for (var i = 27; i <= 47; i++) {
-      productSizes.push(parseInt(req.body[`size${i}Amount`]));
-    }
-  }
-
-  try {
-    const resultNameColor = await pool.query(
-      `SELECT * FROM products WHERE product_name = '${product.productName}' AND color = '${product.productColor}'`,
-    );
-    const resultProductImg = await pool.query(
-      `SELECT * FROM products WHERE image = '${product.productImg}'`,
-    );
-    let failMsg;
-
-    if (resultNameColor.rows.length > 0) {
-      failMsg = "Name and color of the product already exists in database";
-      res.render(`add-product.ejs`, {
-        failMsg: failMsg,
-        allClothes: allItemsType,
-        username: username,
-        year: year,
-      });
-    } else if (resultProductImg.rows.length > 0) {
-      failMsg = "This image already exists in database";
-      res.render(`add-product.ejs`, {
-        failMsg: failMsg,
-        allClothes: allItemsType,
-        username: username,
-        year: year,
-      });
+      const brandLogo = req.files.brandLogo
+        ? req.files.brandLogo[0].filename
+        : null;
+      brandImageExists = true;
+      product = {
+        productImg: productImg,
+        productName: req.body.productName,
+        productTargetGroup: req.body.targetGroup,
+        productCategory: req.body.productCategory,
+        prdouctType: req.body.productType,
+        productLogoImg: brandLogo,
+        productBrandName: req.body.brandName,
+        prodcutPrice: parseFloat(req.body.setPrice),
+        productColor: req.body.setColor,
+      };
     } else {
-      if (brandImageExists) {
-        const brandExists = await pool.query(
-          "SELECT * FROM brands WHERE brand_name = $1 OR brand_logo = $2",
-          [product.productBrandName, product.productLogoImg],
-        );
-        let brandLogo;
-        if (brandExists.rows.length < 1) {
-          await pool.query(
-            "INSERT INTO brands (brand_name, brand_logo) VALUES ($1, $2)",
-            [product.productBrandName, product.productLogoImg],
-          );
-        }
+      brandImageExists = false;
+      const productImg = req.files.productImg
+        ? req.files.productImg[0].filename
+        : null;
+      product = {
+        productImg: productImg,
+        productName: req.body.productName,
+        productTargetGroup: req.body.targetGroup,
+        productCategory: req.body.productCategory,
+        prdouctType: req.body.productType,
+        productBrandName: req.body.brandName,
+        prodcutPrice: parseFloat(req.body.setPrice),
+        productColor: req.body.setColor,
+      };
+    }
+    let productSizes;
+    if (
+      req.body.productCategory == "Clothing" ||
+      req.body.productCategory == "Accessories"
+    ) {
+      productSizes = [
+        parseInt(req.body.xxsAmount),
+        parseInt(req.body.xsAmount),
+        parseInt(req.body.sAmount),
+        parseInt(req.body.mAmount),
+        parseInt(req.body.lAmount),
+        parseInt(req.body.xlAmount),
+        parseInt(req.body.xxlAmount),
+      ];
+    }
+    if (req.body.productCategory == "Shoes") {
+      productSizes = [];
 
-        brandLogo = await pool.query(
-          "SELECT * FROM brands WHERE brand_name = $1",
-          [product.productBrandName],
-        );
-        const addProduct = await pool.query(
-          "INSERT INTO products (image, product_name, target_group, category, product_type, brand_logo, brand_name, price, color) VALUES" +
-            "($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
-          [
-            product.productImg,
-            product.productName,
-            product.productTargetGroup,
-            product.productCategory,
-            product.prdouctType,
-            brandLogo.rows[0]["brand_logo"],
-            brandLogo.rows[0]["brand_name"],
-            product.prodcutPrice,
-            product.productColor,
-          ],
-        );
-        productSizes.push(addProduct.rows[0]["id"]);
-        if (productSizes.length <= 8) {
-          await pool.query(
-            "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
-              "($1, $2, $3, $4, $5, $6, $7, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, $8)",
-            productSizes,
-          );
-        } else if (productSizes.length > 8) {
-          await pool.query(
-            "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
-              "(null, null, null, null, null, null, null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)",
-            productSizes,
-          );
-        }
+      for (var i = 27; i <= 47; i++) {
+        productSizes.push(parseInt(req.body[`size${i}Amount`]));
+      }
+    }
 
+    try {
+      await pool.query(
+        "SELECT * FROM products WHERE product_name = $1 AND color = $2",
+        [product.productName, product.productColor],
+      );
+      const resultProductImg = await pool.query(
+        `SELECT * FROM products WHERE image = $1`,
+        [product.productImg],
+      );
+      let failMsg;
+
+      if (resultNameColor.rows.length > 0) {
+        failMsg = "Name and color of the product already exists in database";
         res.render(`add-product.ejs`, {
-          successMsg: "Product was added to database",
+          failMsg: failMsg,
           allClothes: allItemsType,
           username: username,
           year: year,
         });
-      } else if (!brandImageExists) {
-        const logo = await pool.query(
-          "SELECT * FROM brands WHERE brand_name = $1",
-          [product.productBrandName],
-        );
+      } else if (resultProductImg.rows.length > 0) {
+        failMsg = "This image already exists in database";
+        res.render(`add-product.ejs`, {
+          failMsg: failMsg,
+          allClothes: allItemsType,
+          username: username,
+          year: year,
+        });
+      } else {
+        if (brandImageExists) {
+          const brandExists = await pool.query(
+            "SELECT * FROM brands WHERE brand_name = $1 OR brand_logo = $2",
+            [product.productBrandName, product.productLogoImg],
+          );
+          let brandLogo;
+          if (brandExists.rows.length < 1) {
+            await pool.query(
+              "INSERT INTO brands (brand_name, brand_logo) VALUES ($1, $2)",
+              [product.productBrandName, product.productLogoImg],
+            );
+          }
 
-        if (logo.rows.length < 1) {
-          failMsg = "This brand is not in database";
-          res.render(`add-product.ejs`, {
-            failMsg: failMsg,
-            allClothes: allItemsType,
-            username: username,
-            year: year,
-          });
-        } else {
+          brandLogo = await pool.query(
+            "SELECT * FROM brands WHERE brand_name = $1",
+            [product.productBrandName],
+          );
           const addProduct = await pool.query(
             "INSERT INTO products (image, product_name, target_group, category, product_type, brand_logo, brand_name, price, color) VALUES" +
               "($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
@@ -1450,41 +1436,93 @@ app.post("/add-product", async (req, res) => {
               product.productTargetGroup,
               product.productCategory,
               product.prdouctType,
-              logo.rows[0]["brand_logo"],
-              logo.rows[0]["brand_name"],
+              brandLogo.rows[0]["brand_logo"],
+              brandLogo.rows[0]["brand_name"],
               product.prodcutPrice,
               product.productColor,
             ],
           );
-
+          productSizes.push(addProduct.rows[0]["id"]);
           if (productSizes.length <= 8) {
-            productSizes.push(addProduct.rows[0]["product_id"]);
             await pool.query(
               "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
                 "($1, $2, $3, $4, $5, $6, $7, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, $8)",
               productSizes,
             );
           } else if (productSizes.length > 8) {
-            productSizes.push(addProduct.rows[0]["product_id"]);
             await pool.query(
               "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
                 "(null, null, null, null, null, null, null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)",
               productSizes,
             );
           }
+
           res.render(`add-product.ejs`, {
             successMsg: "Product was added to database",
             allClothes: allItemsType,
             username: username,
             year: year,
           });
+        } else if (!brandImageExists) {
+          const logo = await pool.query(
+            "SELECT * FROM brands WHERE brand_name = $1",
+            [product.productBrandName],
+          );
+
+          if (logo.rows.length < 1) {
+            failMsg = "This brand is not in database";
+            res.render(`add-product.ejs`, {
+              failMsg: failMsg,
+              allClothes: allItemsType,
+              username: username,
+              year: year,
+            });
+          } else {
+            const addProduct = await pool.query(
+              "INSERT INTO products (image, product_name, target_group, category, product_type, brand_logo, brand_name, price, color) VALUES" +
+                "($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+              [
+                product.productImg,
+                product.productName,
+                product.productTargetGroup,
+                product.productCategory,
+                product.prdouctType,
+                logo.rows[0]["brand_logo"],
+                logo.rows[0]["brand_name"],
+                product.prodcutPrice,
+                product.productColor,
+              ],
+            );
+
+            if (productSizes.length <= 8) {
+              productSizes.push(addProduct.rows[0]["product_id"]);
+              await pool.query(
+                "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
+                  "($1, $2, $3, $4, $5, $6, $7, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, $8)",
+                productSizes,
+              );
+            } else if (productSizes.length > 8) {
+              productSizes.push(addProduct.rows[0]["product_id"]);
+              await pool.query(
+                "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
+                  "(null, null, null, null, null, null, null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)",
+                productSizes,
+              );
+            }
+            res.render(`add-product.ejs`, {
+              successMsg: "Product was added to database",
+              allClothes: allItemsType,
+              username: username,
+              year: year,
+            });
+          }
         }
       }
+    } catch (err) {
+      res.send(err);
     }
-  } catch (err) {
-    res.send(err);
-  }
-});
+  },
+);
 
 app.get("/login", (req, res) => {
   const success = req.query.success;
@@ -1495,7 +1533,6 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   passport.authenticate("local", (err, user, options) => {
     if (user) {
-      
       const username = user.username;
       localStorage.setItem("token", username);
       req.session.isLoggedIn = true;
