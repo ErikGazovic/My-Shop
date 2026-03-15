@@ -1,14 +1,16 @@
 import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
+import { LocalStorage } from "node-localstorage";
 import bcrypt from "bcrypt";
 import { Strategy } from "passport-local";
-import passport from "passport";
+import passport, { use } from "passport";
 import env from "dotenv";
 import url from "node:url";
 import pkg from "pg";
 import { Resend } from "resend";
 const resend = new Resend("re_Z2tU1mSM_VA9e7gknB98ga5LRMtjEwkXZ");
+const localStorage = new LocalStorage("./scratch");
 env.config();
 const { Pool } = pkg;
 
@@ -18,7 +20,7 @@ const pool = new Pool({
 });
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const saltRounds = 6;
 
 const year = new Date().getFullYear();
@@ -36,7 +38,7 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
     },
-  })
+  }),
 );
 
 app.use(passport.initialize());
@@ -160,8 +162,14 @@ app.get("/home-page", (req, res) => {
 });
 
 app.get("/home-page/:username", (req, res) => {
-  const username = req.params.username;
-  res.render("index.ejs", { year: year, username: username });
+  let token = localStorage.getItem("token");
+  if (token !== "" || token) {
+    const username = req.params.username;
+
+    res.render("index.ejs", { year: year, username: username });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/about-us", (req, res) => {
@@ -271,7 +279,7 @@ app.get(
       group,
       category,
       type,
-      "brand_name"
+      "brand_name",
     );
 
     let correspondingProductsNames;
@@ -281,7 +289,7 @@ app.get(
       let newName = a[i];
       correspondingProductsNames = await pool.query(
         "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4",
-        [group, category, type, newName]
+        [group, category, type, newName],
       );
       console.log(correspondingProductsNames.rows[0].id);
       if (correspondingProductsNames.rowCount > 0) {
@@ -302,7 +310,7 @@ app.get(
 
     let correspondingProducts = await pool.query(
       "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3",
-      [group, category, type]
+      [group, category, type],
     );
 
     res.render("products.ejs", {
@@ -317,7 +325,7 @@ app.get(
       correspondingProducts: correspondingProducts.rows,
       colors: colors,
     });
-  }
+  },
 );
 
 app.get(
@@ -357,7 +365,7 @@ app.get(
       group,
       category,
       type,
-      "brand_name"
+      "brand_name",
     );
 
     let correspondingProductsNames;
@@ -367,7 +375,7 @@ app.get(
       let newName = a[i];
       correspondingProductsNames = await pool.query(
         "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4",
-        [group, category, type, newName]
+        [group, category, type, newName],
       );
 
       if (correspondingProductsNames.rowCount > 0) {
@@ -387,7 +395,7 @@ app.get(
     }
     let correspondingProducts = await pool.query(
       "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3",
-      [group, category, type]
+      [group, category, type],
     );
 
     res.render("products.ejs", {
@@ -402,7 +410,7 @@ app.get(
       correspondingProducts: correspondingProducts.rows,
       colors: colors,
     });
-  }
+  },
 );
 
 app.get(
@@ -443,7 +451,7 @@ app.get(
       group,
       category,
       type,
-      "brand_name"
+      "brand_name",
     );
 
     let correspondingProductsNames;
@@ -452,7 +460,7 @@ app.get(
       let newName = a[i];
       correspondingProductsNames = await pool.query(
         "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4",
-        [group, category, type, newName]
+        [group, category, type, newName],
       );
       if (correspondingProductsNames.rowCount > 0) {
         for (let correspondingProduct of correspondingProductsNames.rows) {
@@ -470,7 +478,7 @@ app.get(
       let newName = a[i];
       correspondingProductsNames2 = await pool.query(
         "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4",
-        [group, category, type, newName]
+        [group, category, type, newName],
       );
 
       if (correspondingProductsNames2.rowCount > 0) {
@@ -491,10 +499,10 @@ app.get(
 
     const correspondingProducts = await pool.query(
       "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3",
-      [group, category, type]
+      [group, category, type],
     );
     const clickedItem = await pool.query(
-      `SELECT * FROM products WHERE id = ${id}`
+      `SELECT * FROM products WHERE id = ${id}`,
     );
     res.render("products.ejs", {
       message: message,
@@ -512,7 +520,7 @@ app.get(
       imagesAndIDsAndNames: imagesAndIDsAndNames,
       colors: colors,
     });
-  }
+  },
 );
 
 app.get(
@@ -550,7 +558,7 @@ app.get(
       group,
       category,
       type,
-      "brand_name"
+      "brand_name",
     );
 
     let correspondingProductsNames;
@@ -559,7 +567,7 @@ app.get(
       let newName = a[i];
       correspondingProductsNames = await pool.query(
         "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4",
-        [group, category, type, newName]
+        [group, category, type, newName],
       );
       if (correspondingProductsNames.rowCount > 0) {
         for (let correspondingProduct of correspondingProductsNames.rows) {
@@ -578,7 +586,7 @@ app.get(
       let newName = a[i];
       correspondingProductsNames2 = await pool.query(
         "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4",
-        [group, category, type, newName]
+        [group, category, type, newName],
       );
 
       if (correspondingProductsNames2.rowCount > 0) {
@@ -599,11 +607,11 @@ app.get(
 
     const correspondingProducts = await pool.query(
       "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3",
-      [group, category, type]
+      [group, category, type],
     );
 
     const clickedItem = await pool.query(
-      `SELECT * FROM products WHERE id = ${id}`
+      `SELECT * FROM products WHERE id = ${id}`,
     );
     res.render("products.ejs", {
       allBrands: allBrands,
@@ -619,7 +627,7 @@ app.get(
       imagesAndIDsAndNames: imagesAndIDsAndNames,
       colors: colors,
     });
-  }
+  },
 );
 
 app.post(
@@ -666,7 +674,7 @@ app.post(
       group,
       category,
       type,
-      "brand_name"
+      "brand_name",
     );
 
     let correspondingProductsNames;
@@ -676,7 +684,7 @@ app.post(
       let newName = a[i];
       correspondingProductsNames = await pool.query(
         "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4",
-        [group, category, type, newName]
+        [group, category, type, newName],
       );
 
       if (correspondingProductsNames.rowCount > 0) {
@@ -696,87 +704,87 @@ app.post(
     }
     let correspondingProducts = await pool.query(
       "SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3",
-      [group, category, type]
+      [group, category, type],
     );
     if (brand && color && price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6 AND ${size} > 0`,
-        [group, category, type, brand, color, price]
+        [group, category, type, brand, color, price],
       );
     } else if (brand && color && price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6`,
-        [group, category, type, brand, color, price]
+        [group, category, type, brand, color, price],
       );
     } else if (brand && color && !price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND ${size} > 0`,
-        [group, category, type, brand, color]
+        [group, category, type, brand, color],
       );
     } else if (brand && !color && price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5 AND ${size} > 0`,
-        [group, category, type, brand, price]
+        [group, category, type, brand, price],
       );
     } else if (!brand && color && price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4 AND price <= $5 AND ${size} > 0`,
-        [group, category, type, color, price]
+        [group, category, type, color, price],
       );
     } else if (brand && color && !price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5`,
-        [group, category, type, brand, color]
+        [group, category, type, brand, color],
       );
     } else if (brand && !color && !price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND ${size} > 0`,
-        [group, category, type, brand]
+        [group, category, type, brand],
       );
     } else if (!brand && !color && price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $5 AND ${size} > 0`,
-        [group, category, type, price]
+        [group, category, type, price],
       );
     } else if (brand && !color && price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5`,
-        [group, category, type, brand, price]
+        [group, category, type, brand, price],
       );
     } else if (!brand && color && !price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0 AND color = $4`,
-        [group, category, type, color]
+        [group, category, type, color],
       );
     } else if (!brand && color && price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4 AND color = $5`,
-        [group, category, type, price, color]
+        [group, category, type, price, color],
       );
     } else if (!brand && !color && !price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0`,
-        [group, category, type]
+        [group, category, type],
       );
     } else if (brand && !color && !price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name <= $4`,
-        [group, category, type, brand]
+        [group, category, type, brand],
       );
     } else if (!brand && color && !price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4`,
-        [group, category, type, color]
+        [group, category, type, color],
       );
     } else if (!brand && !color && price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4`,
-        [group, category, type, price]
+        [group, category, type, price],
       );
     } else {
       correspondingProducts = await pool.query(
         "SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3",
-        [group, category, type]
+        [group, category, type],
       );
     }
 
@@ -791,7 +799,7 @@ app.post(
       correspondingProducts: correspondingProducts.rows,
       colors: colors,
     });
-  }
+  },
 );
 
 app.post(
@@ -840,7 +848,7 @@ app.post(
       group,
       category,
       type,
-      "brand_name"
+      "brand_name",
     );
 
     let correspondingProductsNames;
@@ -850,7 +858,7 @@ app.post(
       let newName = a[i];
       correspondingProductsNames = await pool.query(
         "SELECT * FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3 AND product_name = $4",
-        [group, category, type, newName]
+        [group, category, type, newName],
       );
 
       if (correspondingProductsNames.rowCount > 0) {
@@ -871,87 +879,87 @@ app.post(
 
     let correspondingProducts = await pool.query(
       "SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3",
-      [group, category, type]
+      [group, category, type],
     );
     if (brand && color && price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6 AND ${size} > 0`,
-        [group, category, type, brand, color, price]
+        [group, category, type, brand, color, price],
       );
     } else if (brand && color && price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND price <= $6`,
-        [group, category, type, brand, color, price]
+        [group, category, type, brand, color, price],
       );
     } else if (brand && color && !price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5 AND ${size} > 0`,
-        [group, category, type, brand, color]
+        [group, category, type, brand, color],
       );
     } else if (brand && !color && price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5 AND ${size} > 0`,
-        [group, category, type, brand, price]
+        [group, category, type, brand, price],
       );
     } else if (!brand && color && price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4 AND price <= $5 AND ${size} > 0`,
-        [group, category, type, color, price]
+        [group, category, type, color, price],
       );
     } else if (brand && color && !price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND color = $5`,
-        [group, category, type, brand, color]
+        [group, category, type, brand, color],
       );
     } else if (brand && !color && !price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND ${size} > 0`,
-        [group, category, type, brand]
+        [group, category, type, brand],
       );
     } else if (!brand && !color && price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $5 AND ${size} > 0`,
-        [group, category, type, price]
+        [group, category, type, price],
       );
     } else if (brand && !color && price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name = $4 AND price <= $5`,
-        [group, category, type, brand, price]
+        [group, category, type, brand, price],
       );
     } else if (!brand && color && !price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0 AND color = $4`,
-        [group, category, type, color]
+        [group, category, type, color],
       );
     } else if (!brand && color && price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4 AND color = $5`,
-        [group, category, type, price, color]
+        [group, category, type, price, color],
       );
     } else if (!brand && !color && !price && size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND ${size} > 0`,
-        [group, category, type]
+        [group, category, type],
       );
     } else if (brand && !color && !price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND brand_name <= $4`,
-        [group, category, type, brand]
+        [group, category, type, brand],
       );
     } else if (!brand && color && !price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND color = $4`,
-        [group, category, type, color]
+        [group, category, type, color],
       );
     } else if (!brand && !color && price && !size) {
       correspondingProducts = await pool.query(
         `SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3 AND price <= $4`,
-        [group, category, type, price]
+        [group, category, type, price],
       );
     } else {
       correspondingProducts = await pool.query(
         "SELECT * FROM products JOIN product_storage ON products.id = product_storage.product_id WHERE target_group = $1 AND category = $2 AND product_type = $3",
-        [group, category, type]
+        [group, category, type],
       );
     }
 
@@ -968,7 +976,7 @@ app.post(
       correspondingProducts: correspondingProducts.rows,
       colors: colors,
     });
-  }
+  },
 );
 
 app.post("/:name/add-to-cart&id=:id", async (req, res) => {
@@ -981,12 +989,12 @@ app.post("/:name/add-to-cart&id=:id", async (req, res) => {
 
   const userIDRaw = await pool.query(
     "SELECT id FROM shop_users WHERE username = $1",
-    [username]
+    [username],
   );
   const userID = userIDRaw.rows[0]["id"];
   await pool.query(
     "INSERT INTO cart (product_id, user_id, size) VALUES ($1, $2, $3)",
-    [id, userID, size]
+    [id, userID, size],
   );
 
   var successMsg = encodeURIComponent("Product was added to your cart");
@@ -996,7 +1004,7 @@ app.post("/:name/add-to-cart&id=:id", async (req, res) => {
       query: {
         success: successMsg,
       },
-    })
+    }),
   );
 });
 
@@ -1005,16 +1013,16 @@ app.get("/:name/my-cart", async (req, res) => {
   const loggedIn = true;
   const userIDRaw = await pool.query(
     "SELECT id FROM shop_users WHERE username = $1",
-    [req.params.name]
+    [req.params.name],
   );
   const userID = userIDRaw.rows[0]["id"];
   const sizesRaw = await pool.query(
     "SELECT size FROM cart WHERE user_id = $1",
-    [userID]
+    [userID],
   );
   const myItemsIdsRaw = await pool.query(
     "SELECT product_id FROM cart WHERE user_id = $1",
-    [userID]
+    [userID],
   );
   const myItemsIds = [];
   for (let id of myItemsIdsRaw.rows) {
@@ -1046,25 +1054,26 @@ app.get("/:name/my-cart", async (req, res) => {
 app.post("/:name/purchase", async (req, res) => {
   const userIDRaw = await pool.query(
     "SELECT id FROM shop_users WHERE username = $1",
-    [req.params.name]
+    [req.params.name],
   );
   const userID = userIDRaw.rows[0]["id"];
 
   await pool.query(
     "INSERT INTO orders (user_id, order_price) VALUES ($1, $2)",
-    [userID, req.body["total-price"]]
+    [userID, req.body["total-price"]],
   );
   await pool.query("DELETE FROM cart WHERE user_id = $1", [userID]);
 
   const orderIDRaw = await pool.query(
     "SELECT order_id FROM orders WHERE user_id = $1",
-    [userID]
+    [userID],
   );
   const orderID = orderIDRaw.rows[0]["order_id"];
 
-  const emailRaw = await pool.query("SELECT email FROM shop_users WHERE id = $1", [
-    userID,
-  ]);
+  const emailRaw = await pool.query(
+    "SELECT email FROM shop_users WHERE id = $1",
+    [userID],
+  );
   const email = emailRaw.rows[0]["email"];
   const emailMessage =
     `Order successful! Order id: ${orderID}, name of user: ${req.params.name}\n, total: ${req.body["total-price"]}` +
@@ -1075,17 +1084,17 @@ app.post("/:name/purchase", async (req, res) => {
 
   const recipient = `${req.params.name} <${email}>`;
 
-    try {
-      await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: email,
-        subject: "THANK YOU FOR YOUR ORDER!",
-        text: emailMessage,
-      });
-      console.log("Email sent successfully!");
-    } catch (err) {
-      console.error("Failed to send email:", err);
-    }
+  try {
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: email,
+      subject: "THANK YOU FOR YOUR ORDER!",
+      text: emailMessage,
+    });
+    console.log("Email sent successfully!");
+  } catch (err) {
+    console.error("Failed to send email:", err);
+  }
 
   res.redirect(
     url.format({
@@ -1094,7 +1103,7 @@ app.post("/:name/purchase", async (req, res) => {
         valid: req.params.name,
         year: year,
       },
-    })
+    }),
   );
 });
 
@@ -1111,7 +1120,7 @@ app.post("/delete", async (req, res) => {
   const username = req.body.username;
   await pool.query(
     "DELETE FROM cart WHERE cart_id IN (SELECT cart_id FROM cart WHERE product_id = $1 AND size = $2 LIMIT 1)",
-    [productToDeleteID, productToDeleteSIZE]
+    [productToDeleteID, productToDeleteSIZE],
   );
   res.redirect(`/${username}/my-cart`);
 });
@@ -1151,9 +1160,10 @@ app.post("/send-verification", async (req, res) => {
   verificationCode = "";
   createCode();
 
-  const emailRaw = await pool.query("SELECT * FROM shop_users WHERE email = $1", [
-    mailInput,
-  ]);
+  const emailRaw = await pool.query(
+    "SELECT * FROM shop_users WHERE email = $1",
+    [mailInput],
+  );
   if (emailRaw.rowCount < 1) {
     res.redirect(
       url.format({
@@ -1161,7 +1171,7 @@ app.post("/send-verification", async (req, res) => {
         query: {
           valid: false,
         },
-      })
+      }),
     );
   } else {
     const email = emailRaw.rows[0]["email"];
@@ -1188,7 +1198,7 @@ app.post("/send-verification", async (req, res) => {
           valid: true,
           name: name,
         },
-      })
+      }),
     );
   }
 });
@@ -1206,7 +1216,7 @@ app.post("/verify", async (req, res) => {
           verified: true,
           name: req.body.name,
         },
-      })
+      }),
     );
   } else {
     res.redirect(
@@ -1216,7 +1226,7 @@ app.post("/verify", async (req, res) => {
           verified: false,
           name: req.body.name,
         },
-      })
+      }),
     );
   }
 });
@@ -1237,7 +1247,7 @@ app.post("/reset-password", async (req, res) => {
             verified: true,
             match: passwordMessage,
           },
-        })
+        }),
       );
     } else {
       bcrypt.hash(password, saltRounds, async (err, hash) => {
@@ -1247,7 +1257,7 @@ app.post("/reset-password", async (req, res) => {
           console.log(password);
           const result = await pool.query(
             "UPDATE shop_users  SET password = $1 WHERE username = $2 RETURNING *",
-            [hash, username]
+            [hash, username],
           );
           setTimeout(() => {
             const user = result.rows[0];
@@ -1261,10 +1271,10 @@ app.post("/reset-password", async (req, res) => {
                     query: {
                       success: "Password has been updated",
                     },
-                  })
+                  }),
                 );
               },
-              1000
+              1000,
             );
           });
         }
@@ -1339,10 +1349,10 @@ app.post("/add-product", async (req, res) => {
 
   try {
     const resultNameColor = await pool.query(
-      `SELECT * FROM products WHERE product_name = '${product.productName}' AND color = '${product.productColor}'`
+      `SELECT * FROM products WHERE product_name = '${product.productName}' AND color = '${product.productColor}'`,
     );
     const resultProductImg = await pool.query(
-      `SELECT * FROM products WHERE image = '${product.productImg}'`
+      `SELECT * FROM products WHERE image = '${product.productImg}'`,
     );
     let failMsg;
 
@@ -1366,19 +1376,19 @@ app.post("/add-product", async (req, res) => {
       if (brandImageExists) {
         const brandExists = await pool.query(
           "SELECT * FROM brands WHERE brand_name = $1 OR brand_logo = $2",
-          [product.productBrandName, product.productLogoImg]
+          [product.productBrandName, product.productLogoImg],
         );
         let brandLogo;
         if (brandExists.rows.length < 1) {
           await pool.query(
             "INSERT INTO brands (brand_name, brand_logo) VALUES ($1, $2)",
-            [product.productBrandName, product.productLogoImg]
+            [product.productBrandName, product.productLogoImg],
           );
         }
 
         brandLogo = await pool.query(
           "SELECT * FROM brands WHERE brand_name = $1",
-          [product.productBrandName]
+          [product.productBrandName],
         );
         const addProduct = await pool.query(
           "INSERT INTO products (image, product_name, target_group, category, product_type, brand_logo, brand_name, price, color) VALUES" +
@@ -1393,20 +1403,20 @@ app.post("/add-product", async (req, res) => {
             brandLogo.rows[0]["brand_name"],
             product.prodcutPrice,
             product.productColor,
-          ]
+          ],
         );
         productSizes.push(addProduct.rows[0]["id"]);
         if (productSizes.length <= 8) {
           await pool.query(
             "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
               "($1, $2, $3, $4, $5, $6, $7, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, $8)",
-            productSizes
+            productSizes,
           );
         } else if (productSizes.length > 8) {
           await pool.query(
             "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
               "(null, null, null, null, null, null, null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)",
-            productSizes
+            productSizes,
           );
         }
 
@@ -1419,7 +1429,7 @@ app.post("/add-product", async (req, res) => {
       } else if (!brandImageExists) {
         const logo = await pool.query(
           "SELECT * FROM brands WHERE brand_name = $1",
-          [product.productBrandName]
+          [product.productBrandName],
         );
 
         if (logo.rows.length < 1) {
@@ -1444,7 +1454,7 @@ app.post("/add-product", async (req, res) => {
               logo.rows[0]["brand_name"],
               product.prodcutPrice,
               product.productColor,
-            ]
+            ],
           );
 
           if (productSizes.length <= 8) {
@@ -1452,14 +1462,14 @@ app.post("/add-product", async (req, res) => {
             await pool.query(
               "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
                 "($1, $2, $3, $4, $5, $6, $7, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, $8)",
-              productSizes
+              productSizes,
             );
           } else if (productSizes.length > 8) {
             productSizes.push(addProduct.rows[0]["product_id"]);
             await pool.query(
               "INSERT INTO product_storage (xxs, xs, s, m, l, xl, xxl, size27, size28, size29, size30, size31, size32, size33, size34, size35, size36, size37, size38, size39, size40, size41, size42, size43, size44, size45, size46, size47, product_id) VALUES" +
                 "(null, null, null, null, null, null, null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)",
-              productSizes
+              productSizes,
             );
           }
           res.render(`add-product.ejs`, {
@@ -1485,7 +1495,9 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   passport.authenticate("local", (err, user, options) => {
     if (user) {
+      
       const username = user.username;
+      localStorage.setItem("token", username);
       req.session.isLoggedIn = true;
       if (req.body.remember === "on") {
         setTimeout(() => {
@@ -1517,11 +1529,11 @@ passport.use(
       try {
         const checkResultUsername = await pool.query(
           "SELECT * FROM users WHERE username = $1",
-          [username]
+          [username],
         );
         const checkResultEmail = await pool.query(
           "SELECT * FROM users WHERE email = $1",
-          [username]
+          [username],
         );
 
         if (
@@ -1550,8 +1562,8 @@ passport.use(
         console.log("error");
         return cb(err);
       }
-    }
-  )
+    },
+  ),
 );
 
 app.get("/logout", (req, res) => {
@@ -1559,6 +1571,7 @@ app.get("/logout", (req, res) => {
     if (err) {
       return next(err);
     }
+    localStorage.removeItem("token");
     res.redirect("/home-page");
   });
 });
@@ -1582,11 +1595,11 @@ app.post("/register", async (req, res) => {
   try {
     const checkResultEmail = await pool.query(
       "SELECT * FROM shop_users WHERE email = $1",
-      [email]
+      [email],
     );
     const checkResultUsername = await pool.query(
       "SELECT * FROM shop_users WHERE username = $1",
-      [username]
+      [username],
     );
     if (checkResultEmail.rows.length > 0) {
       let emailMessage = "User with this email already exists";
@@ -1610,7 +1623,7 @@ app.post("/register", async (req, res) => {
         } else {
           const result = await pool.query(
             "INSERT INTO shop_users (username, email, password) VALUES ($1, $2, $3) RETURNING *",
-            [username, email, hash]
+            [username, email, hash],
           );
           setTimeout(() => {
             const user = result.rows[0];
@@ -1623,7 +1636,7 @@ app.post("/register", async (req, res) => {
                   res.redirect(`/login`);
                 }
               },
-              1000
+              1000,
             );
           });
         }
@@ -1651,7 +1664,7 @@ async function getFilterCriteria(group, category, type, criteria) {
   let cleanCriteria = [];
   let getCriteria = await pool.query(
     `SELECT ${criteria} FROM products WHERE target_group = $1 AND category = $2 AND product_type = $3`,
-    [group, category, type]
+    [group, category, type],
   );
   for (let criteria of getCriteria.rows) {
     listDemo.push(criteria);
