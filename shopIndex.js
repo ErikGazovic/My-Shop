@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS products (
 `);
 
   await pool.query(`
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS shop_users (
   id SERIAL PRIMARY KEY,
   username VARCHAR(20),
   email VARCHAR(50),
@@ -980,7 +980,7 @@ app.post("/:name/add-to-cart&id=:id", async (req, res) => {
   const category = req.body["product-category"];
 
   const userIDRaw = await pool.query(
-    "SELECT id FROM users WHERE username = $1",
+    "SELECT id FROM shop_users WHERE username = $1",
     [username]
   );
   const userID = userIDRaw.rows[0]["id"];
@@ -1004,7 +1004,7 @@ app.get("/:name/my-cart", async (req, res) => {
   const username = req.params.name;
   const loggedIn = true;
   const userIDRaw = await pool.query(
-    "SELECT id FROM users WHERE username = $1",
+    "SELECT id FROM shop_users WHERE username = $1",
     [req.params.name]
   );
   const userID = userIDRaw.rows[0]["id"];
@@ -1045,7 +1045,7 @@ app.get("/:name/my-cart", async (req, res) => {
 
 app.post("/:name/purchase", async (req, res) => {
   const userIDRaw = await pool.query(
-    "SELECT id FROM users WHERE username = $1",
+    "SELECT id FROM shop_users WHERE username = $1",
     [req.params.name]
   );
   const userID = userIDRaw.rows[0]["id"];
@@ -1062,7 +1062,7 @@ app.post("/:name/purchase", async (req, res) => {
   );
   const orderID = orderIDRaw.rows[0]["order_id"];
 
-  const emailRaw = await pool.query("SELECT email FROM users WHERE id = $1", [
+  const emailRaw = await pool.query("SELECT email FROM shop_users WHERE id = $1", [
     userID,
   ]);
   const email = emailRaw.rows[0]["email"];
@@ -1151,7 +1151,7 @@ app.post("/send-verification", async (req, res) => {
   verificationCode = "";
   createCode();
 
-  const emailRaw = await pool.query("SELECT * FROM users WHERE email = $1", [
+  const emailRaw = await pool.query("SELECT * FROM shop_users WHERE email = $1", [
     mailInput,
   ]);
   if (emailRaw.rowCount < 1) {
@@ -1246,7 +1246,7 @@ app.post("/reset-password", async (req, res) => {
         } else {
           console.log(password);
           const result = await pool.query(
-            "UPDATE users  SET password = $1 WHERE username = $2 RETURNING *",
+            "UPDATE shop_users  SET password = $1 WHERE username = $2 RETURNING *",
             [hash, username]
           );
           setTimeout(() => {
@@ -1581,11 +1581,11 @@ app.post("/register", async (req, res) => {
 
   try {
     const checkResultEmail = await pool.query(
-      "SELECT * FROM users WHERE email = $1",
+      "SELECT * FROM shop_users WHERE email = $1",
       [email]
     );
     const checkResultUsername = await pool.query(
-      "SELECT * FROM users WHERE username = $1",
+      "SELECT * FROM shop_users WHERE username = $1",
       [username]
     );
     if (checkResultEmail.rows.length > 0) {
@@ -1609,7 +1609,7 @@ app.post("/register", async (req, res) => {
           res.send(err);
         } else {
           const result = await pool.query(
-            "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *",
+            "INSERT INTO shop_users (username, email, password) VALUES ($1, $2, $3) RETURNING *",
             [username, email, hash]
           );
           setTimeout(() => {
