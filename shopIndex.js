@@ -4,7 +4,7 @@ import session from "express-session";
 import { LocalStorage } from "node-localstorage";
 import bcrypt from "bcrypt";
 import { Strategy } from "passport-local";
-import passport, { use } from "passport";
+import passport from "passport";
 import env from "dotenv";
 import url from "node:url";
 import pkg from "pg";
